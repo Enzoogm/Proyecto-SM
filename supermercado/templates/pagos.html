@@ -1,0 +1,14 @@
+<h1>Pagos Realizados</h1>
+<table border="1">
+<tr><th>ID</th><th>Venta</th><th>Método</th><th>Monto</th><th>Fecha</th></tr>
+{% for p in pagos %}
+<tr>
+<td>{{p[0]}}</td>
+<td>{{p[1]}}</td>
+<td>{{p[2]}}</td>
+<td>${{p[3]}}</td>
+<td>{{p[4]}}</td>
+</tr>
+{% endfor %}
+</table>
+<a href="/">Volver</a>

@@ -1,0 +1,18 @@
+<h1>Registrar Venta</h1>
+<form method="POST">
+    Producto:
+    <select name="id_producto">
+        {% for p in productos %}
+        <option value="{{p[0]}}">{{p[1]}}</option>
+        {% endfor %}
+    </select><br>
+    Cantidad: <input type="number" name="cantidad"><br>
+    Método de pago: 
+    <select name="metodo_pago">
+        <option>Efectivo</option>
+        <option>Tarjeta</option>
+        <option>Transferencia</option>
+    </select><br>
+    <button type="submit">Vender</button>
+</form>
+<a href="/">Volver</a>
