@@ -1,12 +1,18 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
+import mysql.connector
 from datetime import datetime
 
 app = Flask(__name__)
 
-# Función para conectar a la base de datos con timeout
+# Conexión a la base de datos MySQL
 def conectar():
-    return sqlite3.connect('db/supermercado.db', timeout=10)
+    return mysql.connector.connect(
+        host="10.9.120.5",
+        port =3306,
+        user="supermercado",
+        password="super1234",  
+        database="SupermercadoOnline"
+    )
 
 # Ruta principal
 @app.route('/')
@@ -18,7 +24,7 @@ def index():
 def productos():
     try:
         conn = conectar()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM Productos")
         productos = cursor.fetchall()
     except Exception as e:
@@ -34,14 +40,14 @@ def ventas():
         id_producto = request.form['id_producto']
         cantidad = int(request.form['cantidad'])
         metodo_pago = request.form['metodo_pago']
-        fecha = datetime.now().strftime('%Y-%m-%d')
+        fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         try:
             conn = conectar()
             cursor = conn.cursor()
 
             # Obtener precio y stock del producto
-            cursor.execute("SELECT precio, stock FROM Productos WHERE id_producto = ?", (id_producto,))
+            cursor.execute("SELECT precio, stock FROM Productos WHERE id_producto = %s", (id_producto,))
             producto = cursor.fetchone()
 
             if producto is None:
@@ -55,34 +61,31 @@ def ventas():
             total = cantidad * precio_unitario
 
             # Insertar venta
-            cursor.execute("INSERT INTO Ventas (fecha, total) VALUES (?, ?)", (fecha, total))
+            cursor.execute("INSERT INTO Ventas (id_usuario, fecha, total) VALUES (%s, %s, %s)", (1, fecha, total))  
             id_venta = cursor.lastrowid
 
             # Insertar detalle
             cursor.execute("""
                 INSERT INTO DetalleVentas (id_venta, id_producto, cantidad, precio_unitario)
-                VALUES (?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s)
             """, (id_venta, id_producto, cantidad, precio_unitario))
 
             # Actualizar stock
             nuevo_stock = stock_actual - cantidad
-            cursor.execute("UPDATE Productos SET stock = ? WHERE id_producto = ?", (nuevo_stock, id_producto))
+            cursor.execute("UPDATE Productos SET stock = %s WHERE id_producto = %s", (nuevo_stock, id_producto))
 
             # Registrar pago
             cursor.execute("""
                 INSERT INTO Pagos (id_venta, metodo_pago, monto, fecha_pago)
-                VALUES (?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s)
             """, (id_venta, metodo_pago, total, fecha))
 
             conn.commit()
             return redirect('/ventas')
 
-        except sqlite3.OperationalError as e:
-            conn.rollback()
-            return f"Error de base de datos: {e}"
         except Exception as e:
             conn.rollback()
-            return f"Error general: {e}"
+            return f"Error en la transacción: {e}"
         finally:
             conn.close()
 
@@ -99,18 +102,19 @@ def ventas():
 
     return render_template('ventas.html', productos=productos)
 
-# Ver pagos
 @app.route('/pagos')
 def pagos():
+    conn = None
     try:
         conn = conectar()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM Pagos")
         pagos = cursor.fetchall()
     except Exception as e:
         return f"Error al cargar pagos: {e}"
     finally:
-        conn.close()
+        if conn:
+            conn.close()
     return render_template('pagos.html', pagos=pagos)
 
 if __name__ == '__main__':
