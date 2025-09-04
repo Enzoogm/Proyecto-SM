@@ -1,14 +1,30 @@
-<h1>Pagos Realizados</h1>
-<table border="1">
-<tr><th>ID</th><th>Venta</th><th>Método</th><th>Monto</th><th>Fecha</th></tr>
-{% for p in pagos %}
-<tr>
-<td>{{p[0]}}</td>
-<td>{{p[1]}}</td>
-<td>{{p[2]}}</td>
-<td>${{p[3]}}</td>
-<td>{{p[4]}}</td>
-</tr>
-{% endfor %}
-</table>
-<a href="/">Volver</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagos Realizados</title>
+</head>
+<body>
+    <h1>Pagos Realizados</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Venta</th>
+            <th>Método</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+        </tr>
+        {% for p in pagos %}
+        <tr>
+            <td>{{ p.id_pago }}</td>
+            <td>{{ p.id_venta }}</td>
+            <td>{{ p.metodo_pago }}</td>
+            <td>${{ p.monto }}</td>
+            <td>{{ p.fecha_pago }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/">Volver</a>
+</body>
+</html>

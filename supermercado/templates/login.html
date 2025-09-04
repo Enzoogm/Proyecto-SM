@@ -1,0 +1,7 @@
+<h2>Inicio de sesión</h2>
+<form method="POST">
+  Usuario: <input type="text" name="usuario" required><br>
+  Contraseña: <input type="password" name="contraseña" required><br>
+  <button type="submit">Iniciar sesión</button>
+</form>
+<a href="{{ url_for('auth.registro') }}">Registrarse</a>

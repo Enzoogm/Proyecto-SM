@@ -1,12 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supermercado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
-    <h1>Bienvenido al Supermercado</h1>
-    <a href="/productos">Ver Productos</a>
-    <a href="/ventas">Registrar Venta</a>
-    <a href="/pagos">Ver Pagos</a>
+    <header>
+        <div class="header-top">
+            <a class="login-btn" href="/login">Iniciar Sesión</a>
+        </div>
+        <h1>Bienvenido al Supermercado</h1>
+    </header>
+
+    <h2>Categorías</h2>
+    <ul>
+        {% for cat in categorias %}
+        <li><a href="{{ url_for('productos.productos_por_categoria', nombre_categoria=cat) }}">{{ cat }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <nav>
+        <a href="/ventas">Ventas Registradas</a>
+        <a href="/pagos">Ver Pagos</a>
+        <a href="/carrito">Mi Carrito</a>
+    </nav>
+
+    <footer>
+        &copy; 2025 Supermercado Online
+    </footer>
 </body>
 </html>

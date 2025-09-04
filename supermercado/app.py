@@ -1,121 +1,25 @@
-from flask import Flask, render_template, request, redirect
-import mysql.connector
-from datetime import datetime
+from flask import Flask, render_template
+from supermercado.rutas.productos import productos_bp, obtener_categorias
+from supermercado.rutas.ventas import ventas_bp
+from supermercado.rutas.pagos import pagos_bp
+from supermercado.rutas.carrito import carrito_bp
+from supermercado.rutas.auth import auth_bp
 
 app = Flask(__name__)
+app.secret_key = 'tu_clave_secreta_muy_segura_123456'
 
-# Conexión a la base de datos MySQL
-def conectar():
-    return mysql.connector.connect(
-        host="10.9.120.5",
-        port =3306,
-        user="supermercado",
-        password="super1234",  
-        database="SupermercadoOnline"
-    )
+# Registrar blueprints
+app.register_blueprint(productos_bp)
+app.register_blueprint(ventas_bp)
+app.register_blueprint(pagos_bp)
+app.register_blueprint(carrito_bp)
+app.register_blueprint(auth_bp)
 
-# Ruta principal
 @app.route('/')
 def index():
-    return render_template('index.html')
+    categorias = obtener_categorias()
+    return render_template('index.html', categorias=categorias)
 
-# Listado de productos
-@app.route('/productos')
-def productos():
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Productos")
-        productos = cursor.fetchall()
-    except Exception as e:
-        return f"Error al obtener productos: {e}"
-    finally:
-        conn.close()
-    return render_template('productos.html', productos=productos)
-
-# Formulario de ventas
-@app.route('/ventas', methods=['GET', 'POST'])
-def ventas():
-    if request.method == 'POST':
-        id_producto = request.form['id_producto']
-        cantidad = int(request.form['cantidad'])
-        metodo_pago = request.form['metodo_pago']
-        fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        try:
-            conn = conectar()
-            cursor = conn.cursor()
-
-            # Obtener precio y stock del producto
-            cursor.execute("SELECT precio, stock FROM Productos WHERE id_producto = %s", (id_producto,))
-            producto = cursor.fetchone()
-
-            if producto is None:
-                return "Producto no encontrado."
-
-            precio_unitario, stock_actual = producto
-
-            if cantidad > stock_actual:
-                return "No hay suficiente stock disponible."
-
-            total = cantidad * precio_unitario
-
-            # Insertar venta
-            cursor.execute("INSERT INTO Ventas (id_usuario, fecha, total) VALUES (%s, %s, %s)", (1, fecha, total))  
-            id_venta = cursor.lastrowid
-
-            # Insertar detalle
-            cursor.execute("""
-                INSERT INTO DetalleVentas (id_venta, id_producto, cantidad, precio_unitario)
-                VALUES (%s, %s, %s, %s)
-            """, (id_venta, id_producto, cantidad, precio_unitario))
-
-            # Actualizar stock
-            nuevo_stock = stock_actual - cantidad
-            cursor.execute("UPDATE Productos SET stock = %s WHERE id_producto = %s", (nuevo_stock, id_producto))
-
-            # Registrar pago
-            cursor.execute("""
-                INSERT INTO Pagos (id_venta, metodo_pago, monto, fecha_pago)
-                VALUES (%s, %s, %s, %s)
-            """, (id_venta, metodo_pago, total, fecha))
-
-            conn.commit()
-            return redirect('/ventas')
-
-        except Exception as e:
-            conn.rollback()
-            return f"Error en la transacción: {e}"
-        finally:
-            conn.close()
-
-    # Método GET: mostrar formulario
-    try:
-        conn = conectar()
-        cursor = conn.cursor()
-        cursor.execute("SELECT id_producto, nombre_prod FROM Productos")
-        productos = cursor.fetchall()
-    except Exception as e:
-        return f"Error al cargar productos: {e}"
-    finally:
-        conn.close()
-
-    return render_template('ventas.html', productos=productos)
-
-@app.route('/pagos')
-def pagos():
-    conn = None
-    try:
-        conn = conectar()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Pagos")
-        pagos = cursor.fetchall()
-    except Exception as e:
-        return f"Error al cargar pagos: {e}"
-    finally:
-        if conn:
-            conn.close()
-    return render_template('pagos.html', pagos=pagos)
-
+# Ejecutar app
 if __name__ == '__main__':
     app.run(debug=True)

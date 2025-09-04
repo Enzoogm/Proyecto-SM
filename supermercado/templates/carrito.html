@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras</title>
+</head>
+<body>
+    <h1>Carrito de Compras</h1>
+    {% if carrito %}
+    <table border="1">
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th>Acción</th>
+        </tr>
+        {% for item in carrito %}
+        <tr>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>${{ item.precio }}</td>
+            <td>${{ item.cantidad * item.precio }}</td>
+            <td>
+                <form method="POST" action="/carrito/eliminar">
+                    <input type="hidden" name="id_producto" value="{{ item.id_producto }}">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Total: ${{ total }}</h2>
+
+    <form method="POST" action="/carrito/finalizar">
+        Método de pago:
+        <select name="metodo_pago">
+            <option>Efectivo</option>
+            <option>Tarjeta</option>
+            <option>Transferencia</option>
+        </select><br><br>
+        <button type="submit">Finalizar Compra</button>
+    </form>
+    {% else %}
+    <p>El carrito está vacío.</p>
+    {% endif %}
+
+    <a href="/productos">Seguir comprando</a> |
+    <a href="/">Volver</a>
+</body>
+</html>

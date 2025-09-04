@@ -1,18 +1,30 @@
-<h1>Registrar Venta</h1>
-<form method="POST">
-    Producto:
-    <select name="id_producto">
-        {% for p in productos %}
-        <option value="{{p[0]}}">{{p[1]}}</option>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ventas Realizadas</title>
+</head>
+<body>
+    <h1>Ventas Realizadas</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Total</th>
+        </tr>
+        {% for v in ventas %}
+        <tr>
+            <td>{{ v.id_venta }}</td>
+            <td>{{ v.id_producto }}</td>
+            <td>{{ v.cantidad }}</td>
+            <td>{{ v.fecha_venta }}</td>
+            <td>${{ v.total }}</td>
+        </tr>
         {% endfor %}
-    </select><br>
-    Cantidad: <input type="number" name="cantidad"><br>
-    Método de pago: 
-    <select name="metodo_pago">
-        <option>Efectivo</option>
-        <option>Tarjeta</option>
-        <option>Transferencia</option>
-    </select><br>
-    <button type="submit">Vender</button>
-</form>
-<a href="/">Volver</a>
+    </table>
+
+    <a href="/">Volver</a>
+</body>
+</html>

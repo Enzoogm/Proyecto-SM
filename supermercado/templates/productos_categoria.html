@@ -1,0 +1,8 @@
+<h2>Productos de {{ categoria }}</h2>
+<ul>
+    {% for prod in productos %}
+    <li>{{ prod[1] }} - ${{ prod[2] }}</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('productos.mostrar_categorias') }}">Volver a categorías</a>
