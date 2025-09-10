@@ -4,6 +4,7 @@ from supermercado.rutas.ventas import ventas_bp
 from supermercado.rutas.pagos import pagos_bp
 from supermercado.rutas.carrito import carrito_bp
 from supermercado.rutas.auth import auth_bp
+from supermercado.db import conectar
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta_muy_segura_123456'
@@ -18,7 +19,14 @@ app.register_blueprint(auth_bp)
 @app.route('/')
 def index():
     categorias = obtener_categorias()
-    return render_template('index.html', categorias=categorias)
+
+    # Traemos todos los productos
+    db = conectar()
+    cursor = db.cursor()
+    cursor.execute("SELECT id_producto, nombre_prod, descripcion, precio, stock FROM `Productos`")
+    productos = cursor.fetchall()
+
+    return render_template('index.html', categorias=categorias, productos=productos)
 
 # Ejecutar app
 if __name__ == '__main__':

@@ -1,39 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Supermercado</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='index.css') }}"
+    />
+  </head>
+  <body>
     <header>
-        <div class="header-top">
-            <a class="login-btn" href="/login">Iniciar Sesión</a>
-        </div>
-        <h1>Bienvenido al Supermercado</h1>
+      <div class="header-top">
+        <a class="login-btn" href="/login">Iniciar Sesión</a>
+        <a class="carrito-btn" href="/carrito">Carrito</a>
+      </div>
+      <h1>Bienvenido al Supermercado</h1>
     </header>
 
-    <h2>Categorías</h2>
-    <ul>
-        {% for id_categoria, nombre_cat in categorias %}
-        <li>
-            <a href="{{ url_for('productos.productos_por_categoria', id_categoria=id_categoria) }}">
-                {{ nombre_cat }}
+    <main class="main-container">
+      <!-- Sidebar categorías -->
+      <aside class="sidebar">
+        <h2>Categorías</h2>
+        <ul>
+          {% for id_categoria, nombre_cat in categorias %}
+          <li>
+            <a
+              href="{{ url_for('productos.productos_por_categoria', id_categoria=id_categoria) }}"
+            >
+              {{ nombre_cat }}
             </a>
-        </li>
-        {% endfor %}
-    </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </aside>
 
+      <!-- Productos en cards -->
+      <section class="productos">
+        <h2>Productos</h2>
+        <div class="productos-grid">
+          {% for p in productos %}
+          <div class="card">
+            <h3>{{ p[1] }}</h3>
+            <!-- nombre_prod -->
+            <p>{{ p[2] }}</p>
+            <!-- descripcion -->
+            <p><strong>${{ p[3] }}</strong></p>
+            <!-- precio -->
+            <form method="POST" action="/carrito/agregar">
+              <input type="hidden" name="id_producto" value="{{ p[0] }}" />
+              <input
+                type="number"
+                name="cantidad"
+                value="1"
+                min="1"
+                max="{{ p[4] }}"
+              />
+              <button type="submit">Agregar al carrito</button>
+            </form>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
 
-    <nav>
-        <a href="/ventas">Ventas Registradas</a>
-        <a href="/pagos">Ver Pagos</a>
-        <a href="/carrito">Mi Carrito</a>
-    </nav>
-
-    <footer>
-        &copy; 2025 Supermercado Online
-    </footer>
-</body>
+    <footer>&copy; 2025 Supermercado Online</footer>
+  </body>
 </html>

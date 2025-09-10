@@ -37,6 +37,20 @@ def productos_por_categoria(id_categoria):
         categoria=nombre_categoria,
         productos=productos
     )
+# Mostrar todos los productos
+@productos_bp.route('/productos')
+def mostrar_productos():
+    db = conectar()
+    cursor = db.cursor()
+
+    cursor.execute("SELECT id_producto, nombre_prod, descripcion, precio, stock FROM `Productos`")
+    productos = cursor.fetchall()
+
+    return render_template(
+        'productos.html',
+        productos=productos
+    )
+
 
 # Opcional: ruta para mostrar todas las categorías en una página
 @productos_bp.route('/categorias')
