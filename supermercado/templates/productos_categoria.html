@@ -1,8 +1,16 @@
-<h2>Productos de {{ categoria }}</h2>
-<ul>
-    {% for prod in productos %}
-    <li>{{ prod[1] }} - ${{ prod[2] }}</li>
-    {% endfor %}
-</ul>
+<h1>Productos de {{ categoria }}</h1>
 
-<a href="{{ url_for('productos.mostrar_categorias') }}">Volver a categorías</a>
+{% if productos %}
+    <ul>
+        {% for id_producto, nombre_prod, descripcion, precio, stock in productos %}
+            <li>
+                <h3>{{ nombre_prod }}</h3>
+                <p>{{ descripcion }}</p>
+                <p>Precio: ${{ precio }}</p>
+                <p>Stock: {{ stock }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay productos en esta categoría.</p>
+{% endif %}

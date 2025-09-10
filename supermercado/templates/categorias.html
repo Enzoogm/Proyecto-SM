@@ -1,8 +1,9 @@
-<h2>Categorías</h2>
+<h1>Categorías</h1>
+
 <ul>
-    {% for id_cat, nombre_cat in categorias %}
+    {% for id_categoria, nombre_cat in categorias %}
         <li>
-            <a href="{{ url_for('productos.productos_por_categoria', id_categoria=id_cat) }}">
+            <a href="{{ url_for('productos.productos_por_categoria', id_categoria=id_categoria) }}">
                 {{ nombre_cat }}
             </a>
         </li>

@@ -16,10 +16,15 @@
 
     <h2>Categorías</h2>
     <ul>
-        {% for cat in categorias %}
-        <li><a href="{{ url_for('productos.productos_por_categoria', nombre_categoria=cat) }}">{{ cat }}</a></li>
+        {% for id_categoria, nombre_cat in categorias %}
+        <li>
+            <a href="{{ url_for('productos.productos_por_categoria', id_categoria=id_categoria) }}">
+                {{ nombre_cat }}
+            </a>
+        </li>
         {% endfor %}
     </ul>
+
 
     <nav>
         <a href="/ventas">Ventas Registradas</a>
