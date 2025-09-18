@@ -23,3 +23,23 @@ def ventas():
     productos = cursor.fetchall()
     conn.close()
     return render_template('ventas.html', productos=productos)
+
+@ventas_bp.route('/resumen')
+def ventas_listado():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    # Obtener todas las ventas
+    cursor.execute("""
+        SELECT id_venta, fecha, total, id_usuario
+        FROM Ventas
+        ORDER BY fecha DESC
+    """)
+    ventas = cursor.fetchall()
+
+    # Calcular el total de todas las ventas
+    cursor.execute("SELECT SUM(total) FROM Ventas")
+    total_ventas = cursor.fetchone()[0]  # Esto devuelve la suma total
+    conn.close()
+
+    return render_template('ventas_listado.html', ventas=ventas, total_ventas=total_ventas)

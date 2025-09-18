@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -27,4 +27,22 @@
 
     <a href="/">Volver</a>
 </body>
-</html>
+</html> -->
+<h2>Total de ventas: ${{ total_ventas }}</h2>
+
+<table>
+  <tr>
+    <th>ID Venta</th>
+    <th>Fecha</th>
+    <th>Total</th>
+    <th>ID Usuario</th>
+  </tr>
+  {% for venta in ventas %}
+  <tr>
+    <td>{{ venta[0] }}</td>
+    <td>{{ venta[1] }}</td>
+    <td>{{ venta[2] }}</td>
+    <td>{{ venta[3] }}</td>
+  </tr>
+  {% endfor %}
+</table>

@@ -8,6 +8,12 @@ python -m supermercado.app
 
 
 
+
+npm i
+npm run dev
+
+
+
 export FLASK_APP=supermercado.app
 export FLASK_ENV=development
 flask run --debug
