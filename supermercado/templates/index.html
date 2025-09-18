@@ -10,13 +10,25 @@
     />
   </head>
   <body>
-    <header>
-      <div class="header-top">
-        <a class="login-btn" href="/login">Iniciar Sesión</a>
-        <a class="carrito-btn" href="/carrito">Carrito</a>
+    <header class="header">
+      <div class="logo">
+        <h1>Supermercado</h1>
       </div>
-      <h1>Bienvenido al Supermercado</h1>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar producto, marca o categoría">
+        <button><i class="fas fa-search"></i></button>
+      </div>
+
+      <div class="header-actions">
+        <span class="user">👋 Hola, <b>PrimerUsu</b></span>
+        <a href="{{ url_for('auth.logout') }}" class="btn logout">Cerrar Sesión</a>
+
+        <a href="#" class="btn carrito"><i class="fas fa-shopping-cart"></i> Carrito</a>
+      </div>
     </header>
+
+
 
     <main class="main-container">
       <!-- Sidebar categorías -->

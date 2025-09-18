@@ -1,3 +1,95 @@
+/* Header general */
+.header {
+  background: #e53935; /* Rojo profesional */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  gap: 15px;
+}
+
+/* Logo */
+.header .logo h1 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+/* Barra de búsqueda */
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  max-width: 600px; /* límite de ancho */
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+  font-size: 14px;
+  height: 40px; /* altura fija */
+  box-sizing: border-box;
+}
+
+.search-bar button {
+  background: white;
+  border: none;
+  border-radius: 0 20px 20px 0;
+  padding: 0 15px;
+  cursor: pointer;
+  height: 40px; /* misma altura que input */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar button i {
+  color: #e53935;
+  font-size: 18px;
+}
+
+/* Acciones del usuario */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 14px;
+}
+
+.header-actions .user {
+  font-size: 14px;
+}
+
+.header-actions .btn {
+  padding: 6px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.header-actions .logout {
+  background: #ff9800;
+}
+
+.header-actions .logout:hover {
+  background: #e68a00;
+}
+
+.header-actions .carrito {
+  background: #c62828;
+}
+
+.header-actions .carrito:hover {
+  background: #a71d1d;
+}
+
+
 /* Reset */
 * {
   box-sizing: border-box;

@@ -1,74 +1,77 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from supermercado.db import conectar
-from werkzeug.security import generate_password_hash, check_password_hash  
+from flask import Blueprint, session, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
+from supermercado.db import conectar   # tu función de conexión a MySQL
 
 auth_bp = Blueprint('auth', __name__)
-
-# Registro
+# -------------------
+# REGISTRO
+# -------------------
 @auth_bp.route('/registro', methods=['GET', 'POST'])
 def registro():
     if request.method == 'POST':
-        nombre = request.form.get('usuario')  # coincide con HTML
-        email = request.form.get('email')
-        password = request.form.get('contraseña')
-
-        if not nombre or not email or not password:
-            flash("Por favor completa todos los campos.")
-            return redirect(url_for('auth.registro'))
+        nombre = request.form['nombre']
+        email = request.form['email']
+        password = request.form['password']
 
         db = conectar()
         cursor = db.cursor()
 
-        # Verificar si el usuario ya existe
-        cursor.execute("SELECT * FROM usuarios WHERE nombre = %s", (nombre,))
-        if cursor.fetchone():
-            flash("El usuario ya existe.")
-            return redirect(url_for('auth.registro'))
+        hashed_password = generate_password_hash(password)
 
-        hash_pass = generate_password_hash(password)
-
-        # Insertar en la base de datos con rol por defecto 'usuario' y fecha actual
-        cursor.execute(
-            "INSERT INTO usuarios (nombre, email, password, rol, fecha_registro) VALUES (%s, %s, %s, %s, NOW())",
-            (nombre, email, hash_pass, 'usuario')
-        )
-        db.commit()
-        flash("Usuario registrado correctamente. Ya puedes iniciar sesión.")
-        return redirect(url_for('auth.login'))
+        try:
+            cursor.execute("""
+                INSERT INTO Usuarios (nombre, email, password)
+                VALUES (%s, %s, %s)
+            """, (nombre, email, hashed_password))
+            db.commit()
+            flash('Registro exitoso. Ahora puedes iniciar sesión.', 'success')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            db.rollback()
+            flash(f'Error: {e}', 'danger')
+        finally:
+            cursor.close()
+            db.close()
 
     return render_template('registro.html')
 
-# Login
+
+# -------------------
+# LOGIN
+# -------------------
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        usuario = request.form.get('usuario')  # o email si prefieres login con email
-        contraseña = request.form.get('contraseña')
-
-        if not usuario or not contraseña:
-            flash("Por favor completa todos los campos.")
-            return redirect(url_for('auth.login'))
+        email = request.form['email']
+        password = request.form['password']
 
         db = conectar()
-        cursor = db.cursor()
+        cursor = db.cursor(dictionary=True)
 
-        cursor.execute("SELECT id_usuario, usuario, contraseña FROM usuarios WHERE usuario = %s", (usuario,))
-        user = cursor.fetchone()
+        cursor.execute("SELECT * FROM Usuarios WHERE email = %s", (email,))
+        usuario = cursor.fetchone()
 
-        if user and check_password_hash(user[2], contraseña):
-            session['usuario_id'] = user[0]
-            session['usuario'] = user[1]
-            flash("Inicio de sesión exitoso.")
-            return redirect(url_for('productos.mostrar_categorias'))
+        cursor.close()
+        db.close()
+
+        if usuario and check_password_hash(usuario['password'], password):
+            session['usuario_id'] = usuario['id_usuario']
+            session['usuario_nombre'] = usuario['nombre']
+            flash('Bienvenido ' + usuario['nombre'], 'success')
+            return redirect(url_for('index'))  # redirige al inicio
         else:
-            flash("Usuario o contraseña incorrectos.")
-            return redirect(url_for('auth.login'))
+            flash('Email o contraseña incorrectos', 'danger')
 
     return render_template('login.html')
 
-# Logout
+
+# -------------------
+# LOGOUT
+# -------------------
 @auth_bp.route('/logout')
 def logout():
     session.clear()
-    flash("Has cerrado sesión.")
+    flash('Sesión cerrada correctamente.', 'info')
     return redirect(url_for('auth.login'))
+
