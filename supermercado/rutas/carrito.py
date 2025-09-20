@@ -11,7 +11,7 @@ def before_request():
 @carrito_bp.route('/')
 def mostrar_carrito():
     carrito = session.get('carrito', {})
-    return render_template('carrito.html', carrito=carrito)
+    return render_template('carrito.jsx', carrito=carrito)
 
 @carrito_bp.route('/agregar/<int:id_producto>', methods=['POST'])
 def agregar_producto(id_producto):

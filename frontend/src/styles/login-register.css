@@ -1,0 +1,97 @@
+/* login-register.css */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #6dd5fa, #2980b9);
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div {
+  background: white;
+  padding: 40px 50px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  width: 350px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+  color: #2980b9;
+  font-weight: 700;
+  font-size: 28px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* espacio entre campos */
+  align-items: stretch;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  text-align: left;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  margin-top: 8px;
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9faff;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  width: 100%; /* que ocupe todo el ancho del label */
+  box-sizing: border-box;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+  border-color: #2980b9;
+  background-color: #e6f0ff;
+  outline: none;
+}
+
+button {
+  background-color: #2980b9;
+  color: white;
+  padding: 14px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #1c5980;
+}
+
+a {
+  display: inline-block;
+  margin-top: 25px;
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #1c5980;
+  text-decoration: underline;
+}

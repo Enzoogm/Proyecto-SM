@@ -1,77 +1,65 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from flask import Blueprint, session, redirect, url_for
+from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
-from supermercado.db import conectar   # tu función de conexión a MySQL
+from supermercado.db import conectar
 
 auth_bp = Blueprint('auth', __name__)
-# -------------------
-# REGISTRO
-# -------------------
-@auth_bp.route('/registro', methods=['GET', 'POST'])
+
+@auth_bp.route('/registro', methods=['POST'])
 def registro():
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
-        password = request.form['password']
+    data = request.get_json()
+    nombre = data.get('nombre')
+    email = data.get('email')
+    password = data.get('password')
 
-        db = conectar()
-        cursor = db.cursor()
+    if not nombre or not email or not password:
+        return jsonify({'error': 'Faltan datos'}), 400
 
-        hashed_password = generate_password_hash(password)
+    db = conectar()
+    cursor = db.cursor()
 
-        try:
-            cursor.execute("""
-                INSERT INTO Usuarios (nombre, email, password)
-                VALUES (%s, %s, %s)
-            """, (nombre, email, hashed_password))
-            db.commit()
-            flash('Registro exitoso. Ahora puedes iniciar sesión.', 'success')
-            return redirect(url_for('auth.login'))
-        except Exception as e:
-            db.rollback()
-            flash(f'Error: {e}', 'danger')
-        finally:
-            cursor.close()
-            db.close()
+    hashed_password = generate_password_hash(password)
 
-    return render_template('registro.html')
-
-
-# -------------------
-# LOGIN
-# -------------------
-@auth_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
-        db = conectar()
-        cursor = db.cursor(dictionary=True)
-
-        cursor.execute("SELECT * FROM Usuarios WHERE email = %s", (email,))
-        usuario = cursor.fetchone()
-
+    try:
+        cursor.execute("""
+            INSERT INTO Usuarios (nombre, email, password)
+            VALUES (%s, %s, %s)
+        """, (nombre, email, hashed_password))
+        db.commit()
+        return jsonify({'message': 'Registro exitoso'}), 201
+    except Exception as e:
+        db.rollback()
+        return jsonify({'error': str(e)}), 400
+    finally:
         cursor.close()
         db.close()
 
-        if usuario and check_password_hash(usuario['password'], password):
-            session['usuario_id'] = usuario['id_usuario']
-            session['usuario_nombre'] = usuario['nombre']
-            flash('Bienvenido ' + usuario['nombre'], 'success')
-            return redirect(url_for('index'))  # redirige al inicio
-        else:
-            flash('Email o contraseña incorrectos', 'danger')
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
 
-    return render_template('login.html')
+    if not email or not password:
+        return jsonify({'error': 'Faltan datos'}), 400
 
+    db = conectar()
+    cursor = db.cursor(dictionary=True)
 
-# -------------------
-# LOGOUT
-# -------------------
-@auth_bp.route('/logout')
+    cursor.execute("SELECT * FROM Usuarios WHERE email = %s", (email,))
+    usuario = cursor.fetchone()
+
+    cursor.close()
+    db.close()
+
+    if usuario and check_password_hash(usuario['password'], password):
+        # Aquí puedes usar JWT o session, según prefieras
+        # Para ejemplo simple, devolvemos info usuario
+        return jsonify({'message': 'Login exitoso', 'usuario': {'id': usuario['id_usuario'], 'nombre': usuario['nombre']}})
+    else:
+        return jsonify({'error': 'Email o contraseña incorrectos'}), 401
+
+@auth_bp.route('/logout', methods=['POST'])
 def logout():
-    session.clear()
-    flash('Sesión cerrada correctamente.', 'info')
-    return redirect(url_for('auth.login'))
-
+    # Si usas session, aquí la limpiarías
+    # Si usas JWT, el frontend solo elimina el token
+    return jsonify({'message': 'Logout exitoso'})

@@ -14,4 +14,4 @@ def pagos():
         return f"Error al cargar pagos: {e}"
     finally:
         conn.close()
-    return render_template('pagos.html', pagos=pagos)
+    return render_template('pagos.jsx', pagos=pagos)
