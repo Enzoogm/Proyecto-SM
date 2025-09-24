@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Si usas React Router
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-function Productos({ productos, onAgregarAlCarrito }) {
-  // Estado para cantidades por producto, inicializado en 1
-  const [cantidades, setCantidades] = useState(
-    productos.reduce((acc, p) => {
-      acc[p.id_producto] = 1;
-      return acc;
-    }, {})
-  );
+function Productos({ onAgregarAlCarrito }) {
+  const [productos, setProductos] = useState([]);
+  const [cantidades, setCantidades] = useState({});
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/api/productos") // Cambia la ruta si es necesario
+      .then((res) => res.json())
+      .then((data) => {
+        setProductos(data);
+        // Inicializar cantidades en 1
+        const iniciales = data.reduce((acc, p) => {
+          acc[p.id_producto] = 1;
+          return acc;
+        }, {});
+        setCantidades(iniciales);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const handleCantidadChange = (id_producto, value, max) => {
     const cantidad = Math.min(Math.max(Number(value), 1), max);
@@ -36,10 +46,9 @@ function Productos({ productos, onAgregarAlCarrito }) {
                 alt={p.nombre}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = '/static/img/no-image.png';
+                  e.target.src = "/static/img/no-image.png";
                 }}
               />
-
               <div className="card-body">
                 <h5 className="card-title">{p.nombre}</h5>
                 <p className="card-text">
@@ -53,22 +62,23 @@ function Productos({ productos, onAgregarAlCarrito }) {
                   )}
                 </p>
               </div>
-
               <div className="card-footer text-center">
                 <form
                   onSubmit={(e) => handleAgregar(e, p.id_producto)}
                   className="d-flex justify-content-center align-items-center"
                 >
-                  <input type="hidden" name="id_producto" value={p.id_producto} />
                   <input
                     type="number"
-                    name="cantidad"
                     value={cantidades[p.id_producto]}
                     min="1"
                     max={p.stock}
                     className="form-control form-control-sm w-25 me-2"
                     onChange={(e) =>
-                      handleCantidadChange(p.id_producto, e.target.value, p.stock)
+                      handleCantidadChange(
+                        p.id_producto,
+                        e.target.value,
+                        p.stock
+                      )
                     }
                     disabled={p.stock === 0}
                   />
