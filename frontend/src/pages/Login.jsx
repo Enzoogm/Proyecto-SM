@@ -1,64 +1,74 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import '../styles/login-register.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import "../styles/login-register.css";
 
-function Login({ onLogin }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
+
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await res.json();
-      if (res.ok) {
-        onLogin(data.usuario);
-        navigate('/'); // redirige a home
+      console.log(data, res.status);
+
+      if (res.status === 200) {
+        login(data.usuario); // guardamos usuario globalmente
+        if (data.usuario.nombre.toLowerCase() === "admin") {
+          navigate("/"); // admin al home general
+        } else {
+          navigate("/homeClientes"); // cliente al home de clientes
+        }
       } else {
-        setError(data.error || 'Error en login');
+        setError(data.error || "Email o contraseña incorrectos");
       }
     } catch (err) {
-      setError('Error de conexión');
+      setError("Error de conexión con el servidor");
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Iniciar Sesión</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label>
-          Email:{' '}
-          <input
-            type="email"
-            name="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Contraseña:{' '}
-          <input
-            type="password"
-            name="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
+        <label>Email:</label>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <label>Contraseña:</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <button type="submit">Entrar</button>
       </form>
-      <Link to="/registro">¿No tienes cuenta? Regístrate</Link>
+      <p>
+        ¿No tienes cuenta?{" "}
+        <span
+          onClick={() => navigate("/registro")}
+          style={{ cursor: "pointer", color: "blue" }}
+        >
+          Regístrate
+        </span>
+      </p>
     </div>
   );
 }

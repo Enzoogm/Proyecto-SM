@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Si usas React Router
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function Home({ categorias, productos, usuario, onLogout, onAgregarAlCarrito }) {
-  const [busqueda, setBusqueda] = useState('');
-  const [cantidades, setCantidades] = useState(
-    // Inicializa cantidades con 1 para cada producto
-    productos.reduce((acc, p) => {
-      acc[p[0]] = 1;
-      return acc;
-    }, {})
-  );
+function Home({
+  categorias = [],
+  productos = [],
+  usuario,
+  onLogout,
+  onAgregarAlCarrito,
+}) {
+  const [busqueda, setBusqueda] = useState("");
+  const [cantidades, setCantidades] = useState({});
+
+  useEffect(() => {
+    if (productos.length > 0) {
+      const inicial = productos.reduce((acc, p) => {
+        acc[p.id_producto] = 1;
+        return acc;
+      }, {});
+      setCantidades(inicial);
+    }
+  }, [productos]);
 
   const handleCantidadChange = (id_producto, value, max) => {
     const cantidad = Math.min(Math.max(Number(value), 1), max);
@@ -24,39 +34,30 @@ function Home({ categorias, productos, usuario, onLogout, onAgregarAlCarrito }) 
   };
 
   return (
-    <div>
-      <header className="header">
+    <div className="home-container">
+      {/* Header */}
+      <header className="navbar">
         <div className="logo">
           <h1>Supermercado</h1>
         </div>
-
         <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Buscar producto, marca o categoría"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-          />
-          <button type="button" onClick={() => {/* Implementar búsqueda */}}>
-            <i className="fas fa-search"></i>
-          </button>
+          <input type="text" placeholder="Buscar producto, marca o categoría" />
         </div>
-
-        <div className="header-actions">
-          <span className="user">
-            👋 Hola, <b>{usuario || 'PrimerUsu'}</b>
-          </span>
-          <button className="btn logout" onClick={onLogout}>
-            Cerrar Sesión
-          </button>
-
-          <Link to="/carrito" className="btn carrito">
-            <i className="fas fa-shopping-cart"></i> Carrito
-          </Link>
+        <div className="nav-actions">
+          {usuario ? (
+            <>
+              <span>Hola, {usuario.nombre}</span>
+              <button onClick={handleLogout}>Cerrar sesión</button>
+            </>
+          ) : (
+            <a href="/login">Iniciar sesión</a>
+          )}
+          <a href="/carrito">🛒 Carrito</a>
         </div>
       </header>
 
-      <main className="main-container">
+      {/* Main content */}
+      <div className="main">
         {/* Sidebar categorías */}
         <aside className="sidebar">
           <h2>Categorías</h2>
@@ -71,39 +72,41 @@ function Home({ categorias, productos, usuario, onLogout, onAgregarAlCarrito }) 
           </ul>
         </aside>
 
-        {/* Productos en cards */}
+        {/* Productos */}
         <section className="productos">
-          <h2>Productos</h2>
-          <div className="productos-grid">
-            {productos.map((p) => {
-              const [id_producto, nombre_prod, descripcion, precio, stock] = p;
-              return (
-                <div className="card" key={id_producto}>
-                  <h3>{nombre_prod}</h3>
-                  <p>{descripcion}</p>
+          {productos.length === 0 ? (
+            <p>No hay productos disponibles</p>
+          ) : (
+            <div className="productos-grid">
+              {productos.map((p) => (
+                <div className="card" key={p.id_producto}>
+                  <h3>{p.nombre_prod}</h3>
+                  <p>{p.descripcion}</p>
                   <p>
-                    <strong>${precio}</strong>
+                    <strong>${p.precio}</strong>
                   </p>
-                  <form onSubmit={(e) => handleAgregar(e, id_producto)}>
-                    <input type="hidden" name="id_producto" value={id_producto} />
+                  <form onSubmit={(e) => handleAgregar(e, p.id_producto)}>
                     <input
                       type="number"
-                      name="cantidad"
-                      value={cantidades[id_producto]}
+                      value={cantidades[p.id_producto] || 1}
                       min="1"
-                      max={stock}
+                      max={p.stock}
                       onChange={(e) =>
-                        handleCantidadChange(id_producto, e.target.value, stock)
+                        handleCantidadChange(
+                          p.id_producto,
+                          e.target.value,
+                          p.stock
+                        )
                       }
                     />
                     <button type="submit">Agregar al carrito</button>
                   </form>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
-      </main>
+      </div>
 
       <footer>&copy; 2025 Supermercado Online</footer>
     </div>

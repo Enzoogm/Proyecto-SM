@@ -1,0 +1,21 @@
+{
+  "name": "proyecto-sm",
+  "version": "1.0.0",
+  "description": "python -m venv .venv source .venv/bin/activate pip install flask pip install mysql-connector-python",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Enzoogm/Proyecto-SM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Enzoogm/Proyecto-SM/issues"
+  },
+  "homepage": "https://github.com/Enzoogm/Proyecto-SM#readme"
+}

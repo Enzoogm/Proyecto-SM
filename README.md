@@ -2,8 +2,11 @@ python -m venv .venv
 source .venv/bin/activate
 pip install flask
 pip install mysql-connector-python
+pip install flask-cors
 
 python -m supermercado.app
+
+npm init -y
 
 npm install
 #cd front....

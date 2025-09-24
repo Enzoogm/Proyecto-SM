@@ -1,27 +1,51 @@
-import React from 'react';
+// src/pages/Carrito.jsx
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Carrito({ carrito, total, onEliminar, onFinalizar }) {
-  const [metodoPago, setMetodoPago] = React.useState('Efectivo');
+export default function Carrito() {
+  const [carrito, setCarrito] = useState([]);
+  const navigate = useNavigate();
 
+  // Cargar carrito desde sessionStorage al iniciar
+  useEffect(() => {
+    const storedCart = JSON.parse(sessionStorage.getItem("carrito")) || [];
+    setCarrito(storedCart);
+  }, []);
+
+  // Eliminar un producto
   const handleEliminar = (id_producto) => {
-    if (onEliminar) {
-      onEliminar(id_producto);
-    }
+    const updatedCart = carrito.filter(
+      (item) => item.id_producto !== id_producto
+    );
+    setCarrito(updatedCart);
+    sessionStorage.setItem("carrito", JSON.stringify(updatedCart));
   };
 
-  const handleFinalizar = (e) => {
-    e.preventDefault();
-    if (onFinalizar) {
-      onFinalizar(metodoPago);
-    }
+  // Vaciar carrito
+  const handleVaciar = () => {
+    setCarrito([]);
+    sessionStorage.removeItem("carrito");
   };
+
+  // Ir a página de pago
+  const handlePagar = () => {
+    navigate("/pagos"); // O tu ruta de simulación de compra
+  };
+
+  // Calcular total
+  const total = carrito.reduce(
+    (sum, item) => sum + item.precio * item.cantidad,
+    0
+  );
 
   return (
-    <div>
-      <h1>Carrito de Compras</h1>
-      {carrito && carrito.length > 0 ? (
+    <div style={{ padding: "20px" }}>
+      <button onClick={() => navigate("/")}>Volver a la tienda</button>
+      <h2>🛒 Tu Carrito</h2>
+
+      {carrito.length > 0 ? (
         <>
-          <table border="1">
+          <table border="1" cellPadding="5">
             <thead>
               <tr>
                 <th>Producto</th>
@@ -32,12 +56,12 @@ function Carrito({ carrito, total, onEliminar, onFinalizar }) {
               </tr>
             </thead>
             <tbody>
-              {carrito.map((item) => (
-                <tr key={item.id_producto}>
+              {carrito.map((item, index) => (
+                <tr key={item.id_producto || index}>
                   <td>{item.nombre}</td>
                   <td>{item.cantidad}</td>
                   <td>${item.precio}</td>
-                  <td>${item.cantidad * item.precio}</td>
+                  <td>${item.precio * item.cantidad}</td>
                   <td>
                     <button onClick={() => handleEliminar(item.id_producto)}>
                       Eliminar
@@ -48,33 +72,15 @@ function Carrito({ carrito, total, onEliminar, onFinalizar }) {
             </tbody>
           </table>
 
-          <h2>Total: ${total}</h2>
-
-          <form onSubmit={handleFinalizar}>
-            <label>
-              Método de pago:
-              <select
-                name="metodo_pago"
-                value={metodoPago}
-                onChange={(e) => setMetodoPago(e.target.value)}
-              >
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Transferencia">Transferencia</option>
-              </select>
-            </label>
-            <br />
-            <br />
-            <button type="submit">Finalizar Compra</button>
-          </form>
+          <h3>Total: ${total}</h3>
+          <button onClick={handleVaciar}>Vaciar Carrito</button>
+          <button onClick={handlePagar} style={{ marginLeft: "10px" }}>
+            Pagar
+          </button>
         </>
       ) : (
-        <p>El carrito está vacío.</p>
+        <p>Tu carrito está vacío.</p>
       )}
-
-      <a href="/">Seguir comprando</a> | <a href="/">Volver</a>
     </div>
   );
 }
-
-export default Carrito;

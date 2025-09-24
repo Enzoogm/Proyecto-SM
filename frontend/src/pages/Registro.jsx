@@ -1,76 +1,75 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import '../styles/login-register.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// import "../styles/login-register.css";
 
-function Registro({ onRegistro }) {
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+function Registro() {
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
+
     try {
-      const res = await fetch('http://localhost:5000/api/auth/registro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://localhost:5000/api/auth/registro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, email, password }),
       });
+
       const data = await res.json();
-      if (res.ok) {
-        onRegistro({ nombre, email });
-        navigate('/login'); // redirige a login
+      console.log(data, res.status);
+
+      if (res.status === 201) {
+        navigate("/login"); // redirige al login
       } else {
-        setError(data.error || 'Error en registro');
+        setError(data.error || "Error en registro");
       }
     } catch (err) {
-      setError('Error de conexión');
+      setError("Error de conexión con el servidor");
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Registro</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label>
-          Nombre de usuario:{' '}
-          <input
-            type="text"
-            name="nombre"
-            required
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Email:{' '}
-          <input
-            type="email"
-            name="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Contraseña:{' '}
-          <input
-            type="password"
-            name="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
+        <label>Nombre:</label>
+        <input
+          type="text"
+          required
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+        />
+        <label>Email:</label>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <label>Contraseña:</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <button type="submit">Registrarse</button>
       </form>
-      <Link to="/login">¿Ya tienes cuenta? Inicia sesión</Link>
+      <p>
+        ¿Ya tienes cuenta?{" "}
+        <span
+          onClick={() => navigate("/login")}
+          style={{ cursor: "pointer", color: "blue" }}
+        >
+          Inicia sesión
+        </span>
+      </p>
     </div>
   );
 }
