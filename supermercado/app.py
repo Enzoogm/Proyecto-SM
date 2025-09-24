@@ -10,7 +10,6 @@ from supermercado.db import conectar
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta_muy_segura_123456'
 CORS(app)  # Permite peticiones CORS desde cualquier origen (puedes restringir si quieres)
-
 # Registrar blueprints
 app.register_blueprint(productos_bp, url_prefix='/api/productos')
 app.register_blueprint(ventas_bp, url_prefix='/api/ventas')

@@ -6,6 +6,7 @@ import Carrito from "./pages/Carrito.jsx";
 import Pagos from "./pages/Pagos.jsx";
 import Login from "./pages/Login.jsx";
 import Registro from "./pages/Registro.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
 
 function App() {
   return (
@@ -17,7 +18,6 @@ function App() {
       <Route path="/pagos" element={<Pagos />} />
       <Route path="/login" element={<Login />} />
       <Route path="/registro" element={<Registro />} />
-      <Route path="/" element={<Home />} />
       <Route path="/homeClientes" element={<Home />} />
     </Routes>
   );

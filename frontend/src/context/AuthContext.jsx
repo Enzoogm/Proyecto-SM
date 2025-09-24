@@ -1,39 +1,32 @@
-import React from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-function Home() {
-  const { usuario } = useAuth();
-  const navigate = useNavigate();
+// Creamos el contexto
+const AuthContext = createContext();
 
-  // Si no hay usuario logueado, redirige al login
-  if (!usuario) {
-    navigate("/login");
-    return null;
-  }
+// Hook para usarlo en los componentes
+export const useAuth = () => useContext(AuthContext);
+
+export const AuthProvider = ({ children }) => {
+  const [usuario, setUsuario] = useState(() => {
+    // Recupera usuario del localStorage si existe
+    const stored = localStorage.getItem("usuario");
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  // Guarda usuario en state y localStorage
+  const login = (user) => {
+    setUsuario(user);
+    localStorage.setItem("usuario", JSON.stringify(user));
+  };
+
+  const logout = () => {
+    setUsuario(null);
+    localStorage.removeItem("usuario");
+  };
 
   return (
-    <div>
-      <h1>Bienvenido, {usuario.nombre}</h1>
-
-      {usuario.nombre.toLowerCase() === "admin" ? (
-        <div>
-          <h2>Panel de Administración</h2>
-          {/* Aquí van los componentes que quieras para admin */}
-          <button onClick={() => alert("Ver usuarios")}>Ver Usuarios</button>
-          <button onClick={() => alert("Reportes")}>Reportes</button>
-        </div>
-      ) : (
-        <div>
-          <h2>Home Clientes</h2>
-          {/* Aquí va el contenido para clientes */}
-          <p>Puedes ver productos, categorías y tu carrito</p>
-          <button onClick={() => navigate("/productos")}>Ver Productos</button>
-          <button onClick={() => navigate("/carrito")}>Ir al Carrito</button>
-        </div>
-      )}
-    </div>
+    <AuthContext.Provider value={{ usuario, login, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
-}
-
-export default Home;
+};
