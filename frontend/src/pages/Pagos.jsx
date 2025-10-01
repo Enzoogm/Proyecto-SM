@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Pagos() {
   const { carrito, vaciarCarrito } = useCart();
-  const { usuario } = useAuth(); // ✅ usuario logueado
+  const { usuario } = useAuth();
   const [metodo, setMetodo] = useState("tarjeta");
   const [datos, setDatos] = useState({
     nombre: "",
@@ -13,71 +13,69 @@ export default function Pagos() {
     vencimiento: "",
     cvv: "",
   });
+  const [cupon, setCupon] = useState("");
+  const [cuponesDisponibles, setCuponesDisponibles] = useState([]);
+  const [descuento, setDescuento] = useState(0);
 
   const navigate = useNavigate();
-  const total = carrito.reduce(
+
+  // ✅ calcular subtotal
+  const subtotal = carrito.reduce(
     (sum, item) => sum + item.precio * item.cantidad,
     0
   );
 
-  // 🖊️ Manejo de inputs con validaciones
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // ✅ descuento automático por efectivo
+  const descuentoEfectivo = metodo === "efectivo" ? subtotal * 0.1 : 0;
 
-    if (name === "numero") {
-      if (/^\d*$/.test(value) && value.length <= 16) {
-        setDatos({ ...datos, numero: value });
-      }
+  // ✅ total final (forzado a números)
+  const totalFinal = Math.max(
+    subtotal - Number(descuento) - Number(descuentoEfectivo),
+    0
+  );
+
+  // 🔹 Traer cupones desde el backend
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/api/pagos/cupones")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🟢 Cupones disponibles:", data);
+        setCuponesDisponibles(data);
+      })
+      .catch((err) => console.error("Error cargando cupones:", err));
+  }, []);
+
+  // 🔹 Aplicar cupón
+  const aplicarCupon = () => {
+    if (!cupon) {
+      alert("⚠️ Ingresá un código de cupón.");
       return;
     }
 
-    if (name === "vencimiento") {
-      let input = value.replace(/\D/g, "");
-      if (input.length > 4) input = input.slice(0, 4);
-      if (input.length >= 3) {
-        input = input.slice(0, 2) + "/" + input.slice(2);
-      }
-      setDatos({ ...datos, vencimiento: input });
-      return;
-    }
+    const encontrado = cuponesDisponibles.find(
+      (c) => c.codigo.toLowerCase() === cupon.toLowerCase()
+    );
 
-    if (name === "cvv") {
-      if (/^\d*$/.test(value) && value.length <= 3) {
-        setDatos({ ...datos, cvv: value });
+    if (encontrado) {
+      if (encontrado.tipo === "porcentaje") {
+        setDescuento((subtotal * Number(encontrado.descuento)) / 100);
+      } else {
+        setDescuento(Number(encontrado.descuento));
       }
-      return;
+      alert(`✅ Cupón "${cupon}" aplicado!`);
+    } else {
+      alert("❌ Cupón inválido o no disponible.");
+      setDescuento(0);
     }
-
-    setDatos({ ...datos, [name]: value });
   };
 
-  // 🛒 Confirmar pago
+  // 🔹 Confirmar pago
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!usuario) {
       alert("⚠️ Debes iniciar sesión para poder comprar.");
       navigate("/login");
       return;
-    }
-
-    if (metodo === "tarjeta") {
-      if (!datos.nombre || !datos.numero || !datos.vencimiento || !datos.cvv) {
-        alert("⚠️ Completa todos los datos de la tarjeta.");
-        return;
-      }
-      if (datos.numero.length < 16) {
-        alert("⚠️ El número de tarjeta debe tener 16 dígitos.");
-        return;
-      }
-      if (datos.vencimiento.length < 5) {
-        alert("⚠️ El vencimiento debe tener el formato MM/AA.");
-        return;
-      }
-      if (datos.cvv.length < 3) {
-        alert("⚠️ El CVV debe tener 3 dígitos.");
-        return;
-      }
     }
 
     try {
@@ -87,13 +85,15 @@ export default function Pagos() {
         body: JSON.stringify({
           carrito,
           metodo,
-          total,
-          id_usuario: usuario.id, // ✅ mandamos id del usuario logueado
+          subtotal,
+          descuento: Number(descuento) + Number(descuentoEfectivo),
+          total: totalFinal,
+          id_usuario: usuario.id,
+          cupon, // ✅ enviamos el cupón al backend
         }),
       });
 
       const data = await res.json();
-
       if (res.ok) {
         alert(`✅ Pago registrado con éxito (Venta ID: ${data.id_venta})`);
         vaciarCarrito();
@@ -110,7 +110,14 @@ export default function Pagos() {
   return (
     <div style={{ padding: "20px" }}>
       <h2>💳 Finalizar Compra</h2>
-      <h3>Total a pagar: ${total}</h3>
+      <h3>Subtotal: ${subtotal.toFixed(2)}</h3>
+      {descuentoEfectivo > 0 && (
+        <h3>Descuento efectivo: -${Number(descuentoEfectivo).toFixed(2)}</h3>
+      )}
+      {Number(descuento) > 0 && (
+        <h3>Descuento cupón: -${Number(descuento).toFixed(2)}</h3>
+      )}
+      <h2>Total Final: ${Number(totalFinal).toFixed(2)}</h2>
 
       <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
         <label>
@@ -120,7 +127,7 @@ export default function Pagos() {
             checked={metodo === "tarjeta"}
             onChange={() => setMetodo("tarjeta")}
           />{" "}
-          Tarjeta de crédito/débito
+          Tarjeta
         </label>
         <br />
         <label>
@@ -130,7 +137,7 @@ export default function Pagos() {
             checked={metodo === "efectivo"}
             onChange={() => setMetodo("efectivo")}
           />{" "}
-          Pago en efectivo
+          Efectivo (10% OFF)
         </label>
 
         {metodo === "tarjeta" && (
@@ -147,31 +154,45 @@ export default function Pagos() {
               name="nombre"
               placeholder="Nombre en la tarjeta"
               value={datos.nombre}
-              onChange={handleChange}
+              onChange={(e) => setDatos({ ...datos, nombre: e.target.value })}
             />
             <input
               type="text"
               name="numero"
-              placeholder="Número de tarjeta (16 dígitos)"
+              placeholder="Número de tarjeta"
               value={datos.numero}
-              onChange={handleChange}
+              onChange={(e) => setDatos({ ...datos, numero: e.target.value })}
             />
             <input
               type="text"
               name="vencimiento"
               placeholder="MM/AA"
               value={datos.vencimiento}
-              onChange={handleChange}
+              onChange={(e) =>
+                setDatos({ ...datos, vencimiento: e.target.value })
+              }
             />
             <input
               type="text"
               name="cvv"
-              placeholder="CVV (3 dígitos)"
+              placeholder="CVV"
               value={datos.cvv}
-              onChange={handleChange}
+              onChange={(e) => setDatos({ ...datos, cvv: e.target.value })}
             />
           </div>
         )}
+
+        <div style={{ marginTop: "20px" }}>
+          <input
+            type="text"
+            placeholder="Código de cupón"
+            value={cupon}
+            onChange={(e) => setCupon(e.target.value)}
+          />
+          <button type="button" onClick={aplicarCupon}>
+            Aplicar cupón
+          </button>
+        </div>
 
         <button type="submit" style={{ marginTop: "15px" }}>
           Confirmar pago
