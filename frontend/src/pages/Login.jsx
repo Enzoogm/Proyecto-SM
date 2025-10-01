@@ -1,6 +1,7 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../components/AuthContext";
 import "../styles/login-register.css";
 
 function Login() {
@@ -22,14 +23,13 @@ function Login() {
       });
 
       const data = await res.json();
-      console.log(data, res.status);
 
       if (res.status === 200) {
-        login(data.usuario); // guardamos usuario globalmente
+        login(data.usuario);
         if (data.usuario.nombre.toLowerCase() === "admin") {
-          navigate("/"); // admin al home general
+          navigate("/");
         } else {
-          navigate("/homeClientes"); // cliente al home
+          navigate("/homeClientes");
         }
       } else {
         setError(data.error || "Email o contraseña incorrectos");
@@ -40,10 +40,10 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
+    <div className="form-container">
       <h2>Iniciar Sesión</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={handleSubmit} className="form-box">
         <label>Email:</label>
         <input
           type="email"
@@ -58,14 +58,13 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Entrar</button>
+        <button type="submit" className="btn-submit">
+          Entrar
+        </button>
       </form>
-      <p>
+      <p className="redirect">
         ¿No tienes cuenta?{" "}
-        <span
-          onClick={() => navigate("/registro")}
-          style={{ cursor: "pointer", color: "blue" }}
-        >
+        <span onClick={() => navigate("/registro")} className="link">
           Regístrate
         </span>
       </p>

@@ -1,0 +1,69 @@
+.carrito-container {
+  padding: 20px;
+}
+
+.carrito-vacio {
+  color: #666;
+  font-style: italic;
+}
+
+.carrito-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.carrito-tabla th,
+.carrito-tabla td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.input-cantidad {
+  width: 70px;
+  padding: 5px;
+  text-align: center;
+}
+
+.carrito-total {
+  margin-top: 15px;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.carrito-acciones {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-volver,
+.btn-vaciar,
+.btn-pagar,
+.btn-eliminar {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-volver {
+  background-color: #555;
+  color: white;
+}
+
+.btn-vaciar {
+  background-color: #d9534f;
+  color: white;
+}
+
+.btn-pagar {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-eliminar {
+  background-color: #f0ad4e;
+  color: white;
+}

@@ -1,7 +1,9 @@
+// src/pages/Pagos.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useCart } from "../components/CartContext.jsx";
+import { useAuth } from "../components/AuthContext.jsx";
+import "../styles/Pagos.css";
 
 export default function Pagos() {
   const { carrito, vaciarCarrito } = useCart();
@@ -19,39 +21,25 @@ export default function Pagos() {
 
   const navigate = useNavigate();
 
-  // ✅ calcular subtotal
   const subtotal = carrito.reduce(
     (sum, item) => sum + item.precio * item.cantidad,
     0
   );
-
-  // ✅ descuento automático por efectivo
   const descuentoEfectivo = metodo === "efectivo" ? subtotal * 0.1 : 0;
-
-  // ✅ total final (forzado a números)
   const totalFinal = Math.max(
     subtotal - Number(descuento) - Number(descuentoEfectivo),
     0
   );
 
-  // 🔹 Traer cupones desde el backend
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/pagos/cupones")
       .then((res) => res.json())
-      .then((data) => {
-        console.log("🟢 Cupones disponibles:", data);
-        setCuponesDisponibles(data);
-      })
+      .then((data) => setCuponesDisponibles(data))
       .catch((err) => console.error("Error cargando cupones:", err));
   }, []);
 
-  // 🔹 Aplicar cupón
   const aplicarCupon = () => {
-    if (!cupon) {
-      alert("⚠️ Ingresá un código de cupón.");
-      return;
-    }
-
+    if (!cupon) return alert("⚠️ Ingresá un código de cupón.");
     const encontrado = cuponesDisponibles.find(
       (c) => c.codigo.toLowerCase() === cupon.toLowerCase()
     );
@@ -69,7 +57,6 @@ export default function Pagos() {
     }
   };
 
-  // 🔹 Confirmar pago
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!usuario) {
@@ -89,7 +76,7 @@ export default function Pagos() {
           descuento: Number(descuento) + Number(descuentoEfectivo),
           total: totalFinal,
           id_usuario: usuario.id,
-          cupon, // ✅ enviamos el cupón al backend
+          cupon,
         }),
       });
 
@@ -108,47 +95,37 @@ export default function Pagos() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="pagos-container">
       <h2>💳 Finalizar Compra</h2>
       <h3>Subtotal: ${subtotal.toFixed(2)}</h3>
       {descuentoEfectivo > 0 && (
-        <h3>Descuento efectivo: -${Number(descuentoEfectivo).toFixed(2)}</h3>
+        <h3>Descuento efectivo: -${descuentoEfectivo.toFixed(2)}</h3>
       )}
-      {Number(descuento) > 0 && (
-        <h3>Descuento cupón: -${Number(descuento).toFixed(2)}</h3>
-      )}
-      <h2>Total Final: ${Number(totalFinal).toFixed(2)}</h2>
+      {descuento > 0 && <h3>Descuento cupón: -${descuento.toFixed(2)}</h3>}
+      <h2>Total Final: ${totalFinal.toFixed(2)}</h2>
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
+      <form onSubmit={handleSubmit} className="pagos-form">
         <label>
           <input
             type="radio"
             value="tarjeta"
             checked={metodo === "tarjeta"}
             onChange={() => setMetodo("tarjeta")}
-          />{" "}
+          />
           Tarjeta
         </label>
-        <br />
         <label>
           <input
             type="radio"
             value="efectivo"
             checked={metodo === "efectivo"}
             onChange={() => setMetodo("efectivo")}
-          />{" "}
+          />
           Efectivo (10% OFF)
         </label>
 
         {metodo === "tarjeta" && (
-          <div
-            style={{
-              marginTop: "15px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
+          <div className="tarjeta-datos">
             <input
               type="text"
               name="nombre"
@@ -182,7 +159,7 @@ export default function Pagos() {
           </div>
         )}
 
-        <div style={{ marginTop: "20px" }}>
+        <div className="cupon-section">
           <input
             type="text"
             placeholder="Código de cupón"
@@ -194,7 +171,7 @@ export default function Pagos() {
           </button>
         </div>
 
-        <button type="submit" style={{ marginTop: "15px" }}>
+        <button type="submit" className="btn-confirmar">
           Confirmar pago
         </button>
       </form>

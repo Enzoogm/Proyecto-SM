@@ -1,6 +1,8 @@
+// src/pages/Carrito.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { useCart } from "../components/CartContext.jsx";
+import "../styles/Carrito.css";
 
 export default function Carrito() {
   const { carrito, eliminarDelCarrito, setCantidad, vaciarCarrito } = useCart();
@@ -8,7 +10,7 @@ export default function Carrito() {
   const [items, setItems] = useState(carrito);
 
   useEffect(() => {
-    setItems(carrito); // sincronizar con context
+    setItems(carrito);
   }, [carrito]);
 
   const total = items.reduce(
@@ -17,19 +19,17 @@ export default function Carrito() {
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <button onClick={() => navigate("/")}>Volver a la tienda</button>
+    <div className="carrito-container">
+      <button className="btn-volver" onClick={() => navigate("/")}>
+        Volver a la tienda
+      </button>
       <h2>🛒 Tu Carrito</h2>
 
       {items.length === 0 ? (
-        <p>Tu carrito está vacío.</p>
+        <p className="carrito-vacio">Tu carrito está vacío.</p>
       ) : (
         <>
-          <table
-            border="1"
-            cellPadding="5"
-            style={{ width: "100%", borderCollapse: "collapse" }}
-          >
+          <table className="carrito-tabla">
             <thead>
               <tr>
                 <th>Producto</th>
@@ -49,7 +49,7 @@ export default function Carrito() {
                       min="1"
                       value={it.cantidad}
                       onChange={(e) => setCantidad(it.id, e.target.value)}
-                      style={{ width: 70 }}
+                      className="input-cantidad"
                     />
                   </td>
                   <td>${Number(it.precio).toFixed(2)}</td>
@@ -57,7 +57,10 @@ export default function Carrito() {
                     ${(Number(it.precio) * Number(it.cantidad)).toFixed(2)}
                   </td>
                   <td>
-                    <button onClick={() => eliminarDelCarrito(it.id)}>
+                    <button
+                      className="btn-eliminar"
+                      onClick={() => eliminarDelCarrito(it.id)}
+                    >
                       Eliminar
                     </button>
                   </td>
@@ -66,12 +69,16 @@ export default function Carrito() {
             </tbody>
           </table>
 
-          <h3 style={{ marginTop: 10 }}>Total: ${total.toFixed(2)}</h3>
+          <h3 className="carrito-total">Total: ${total.toFixed(2)}</h3>
 
-          <button onClick={vaciarCarrito}>Vaciar Carrito</button>
-          <button onClick={() => navigate("/pagos")} style={{ marginLeft: 10 }}>
-            Pagar
-          </button>
+          <div className="carrito-acciones">
+            <button className="btn-vaciar" onClick={vaciarCarrito}>
+              Vaciar Carrito
+            </button>
+            <button className="btn-pagar" onClick={() => navigate("/pagos")}>
+              Pagar
+            </button>
+          </div>
         </>
       )}
     </div>

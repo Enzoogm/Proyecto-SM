@@ -1,6 +1,8 @@
+// src/pages/Registro.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../components/AuthContext";
+import "../styles/login-register.css";
 
 function Registro() {
   const [nombre, setNombre] = useState("");
@@ -22,16 +24,13 @@ function Registro() {
       });
 
       const data = await res.json();
-      console.log(data, res.status);
 
       if (res.status === 201) {
-        // 🚀 Guardar usuario automáticamente después del registro
         login(data.usuario);
-
         if (data.usuario.nombre.toLowerCase() === "admin") {
-          navigate("/"); // admin al home general
+          navigate("/");
         } else {
-          navigate("/homeClientes"); // cliente al home
+          navigate("/homeClientes");
         }
       } else {
         setError(data.error || "Error en registro");
@@ -42,10 +41,10 @@ function Registro() {
   };
 
   return (
-    <div className="login-container">
+    <div className="form-container">
       <h2>Registro</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={handleSubmit} className="form-box">
         <label>Nombre:</label>
         <input
           type="text"
@@ -67,14 +66,13 @@ function Registro() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Registrarse</button>
+        <button type="submit" className="btn-submit">
+          Registrarse
+        </button>
       </form>
-      <p>
+      <p className="redirect">
         ¿Ya tienes cuenta?{" "}
-        <span
-          onClick={() => navigate("/login")}
-          style={{ cursor: "pointer", color: "blue" }}
-        >
+        <span onClick={() => navigate("/login")} className="link">
           Inicia sesión
         </span>
       </p>
