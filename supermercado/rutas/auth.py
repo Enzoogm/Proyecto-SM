@@ -1,9 +1,12 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from supermercado.db import conectar
 
 auth_bp = Blueprint('auth', __name__)
 
+# -------------------
+# REGISTRO
+# -------------------
 @auth_bp.route('/registro', methods=['POST'])
 def registro():
     data = request.get_json()
@@ -25,7 +28,16 @@ def registro():
             VALUES (%s, %s, %s)
         """, (nombre, email, hashed_password))
         db.commit()
-        return jsonify({'message': 'Registro exitoso'}), 201
+        user_id = cursor.lastrowid
+
+        return jsonify({
+            'message': 'Registro exitoso',
+            'usuario': {
+                'id': user_id,
+                'nombre': nombre,
+                'email': email
+            }
+        }), 201
     except Exception as e:
         db.rollback()
         return jsonify({'error': str(e)}), 400
@@ -33,6 +45,9 @@ def registro():
         cursor.close()
         db.close()
 
+# -------------------
+# LOGIN
+# -------------------
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -52,14 +67,20 @@ def login():
     db.close()
 
     if usuario and check_password_hash(usuario['password'], password):
-        # Aquí puedes usar JWT o session, según prefieras
-        # Para ejemplo simple, devolvemos info usuario
-        return jsonify({'message': 'Login exitoso', 'usuario': {'id': usuario['id_usuario'], 'nombre': usuario['nombre']}})
+        return jsonify({
+            'message': 'Login exitoso',
+            'usuario': {
+                'id': usuario['id_usuario'],
+                'nombre': usuario['nombre'],
+                'email': usuario['email']
+            }
+        }), 200
     else:
         return jsonify({'error': 'Email o contraseña incorrectos'}), 401
 
+# -------------------
+# LOGOUT
+# -------------------
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
-    # Si usas session, aquí la limpiarías
-    # Si usas JWT, el frontend solo elimina el token
     return jsonify({'message': 'Logout exitoso'})

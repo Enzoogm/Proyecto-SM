@@ -1,14 +1,19 @@
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import "./Home.css";
 
-function Home({ usuario, onLogout }) {
+function Home() {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [cantidades, setCantidades] = useState({});
   const [busqueda, setBusqueda] = useState("");
+  const { agregarAlCarrito, carrito } = useCart();
+  const { usuario, logout } = useAuth();
 
-  // Cargar productos
+  // 🔹 Cargar productos
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/productos/all")
       .then((res) => res.json())
@@ -23,7 +28,7 @@ function Home({ usuario, onLogout }) {
       .catch((err) => console.error("Error cargando productos:", err));
   }, []);
 
-  // Cargar categorías
+  // 🔹 Cargar categorías
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/categorias")
       .then((res) => res.json())
@@ -31,7 +36,6 @@ function Home({ usuario, onLogout }) {
       .catch((err) => console.error("Error cargando categorías:", err));
   }, []);
 
-  // Cambiar cantidad
   const manejarCambioCantidad = (id, valor) => {
     setCantidades({
       ...cantidades,
@@ -39,20 +43,18 @@ function Home({ usuario, onLogout }) {
     });
   };
 
-  // Agregar al carrito
-  const agregarAlCarrito = (producto) => {
+  const handleAgregar = (producto) => {
     const cantidad = cantidades[producto.id] || 1;
-    console.log(`Agregado al carrito: ${producto.nombre} (x${cantidad})`);
+    agregarAlCarrito(producto, cantidad);
   };
 
-  // Filtrar productos por búsqueda
   const productosFiltrados = productos.filter((p) =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
     <div>
-      {/* Barra superior */}
+      {/* 🔹 Barra superior */}
       <header
         className="navbar"
         style={{
@@ -64,9 +66,8 @@ function Home({ usuario, onLogout }) {
           color: "#fff",
         }}
       >
-        <h1 style={{ margin: 0 }}>Supermercado</h1>
+        <h1>Supermercado</h1>
 
-        {/* Buscador */}
         <input
           type="text"
           placeholder="Buscar producto..."
@@ -80,24 +81,16 @@ function Home({ usuario, onLogout }) {
           }}
         />
 
-        {/* Usuario / login */}
         <div>
+          <Link to="/carrito" style={{ color: "#fff", marginRight: "20px" }}>
+            🛒 Carrito ({carrito.reduce((acc, item) => acc + item.cantidad, 0)})
+          </Link>
           {usuario ? (
             <>
               <span style={{ marginRight: "15px" }}>
                 Hola, {usuario.nombre}
               </span>
-              <button
-                onClick={onLogout}
-                style={{
-                  padding: "5px 10px",
-                  borderRadius: "5px",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Cerrar sesión
-              </button>
+              <button onClick={logout}>Cerrar sesión</button>
             </>
           ) : (
             <Link to="/login" style={{ color: "#fff", fontWeight: "bold" }}>
@@ -107,7 +100,7 @@ function Home({ usuario, onLogout }) {
         </div>
       </header>
 
-      {/* Contenedor principal */}
+      {/* 🔹 Contenido */}
       <div className="container">
         {/* Sidebar categorías */}
         <aside>
@@ -115,7 +108,7 @@ function Home({ usuario, onLogout }) {
           <ul>
             {categorias.map((c) => (
               <li key={c.id}>
-                <Link to={`/productos/categoria/${c.id}`}>{c.nombre}</Link>
+                <Link to={`/categorias/${c.id}`}>{c.nombre}</Link>
               </li>
             ))}
           </ul>
@@ -140,7 +133,7 @@ function Home({ usuario, onLogout }) {
                   onChange={(e) => manejarCambioCantidad(p.id, e.target.value)}
                 />
                 <button
-                  onClick={() => agregarAlCarrito(p)}
+                  onClick={() => handleAgregar(p)}
                   disabled={p.stock === 0}
                 >
                   {p.stock > 0 ? "Agregar al carrito" : "Agotado"}

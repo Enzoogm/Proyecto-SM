@@ -29,7 +29,7 @@ function Login() {
         if (data.usuario.nombre.toLowerCase() === "admin") {
           navigate("/"); // admin al home general
         } else {
-          navigate("/homeClientes"); // cliente al home de clientes
+          navigate("/homeClientes"); // cliente al home
         }
       } else {
         setError(data.error || "Email o contraseña incorrectos");

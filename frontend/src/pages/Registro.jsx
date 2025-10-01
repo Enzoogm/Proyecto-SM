@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import "../styles/login-register.css";
+import { useAuth } from "../context/AuthContext";
 
 function Registro() {
   const [nombre, setNombre] = useState("");
@@ -8,6 +8,7 @@ function Registro() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +25,14 @@ function Registro() {
       console.log(data, res.status);
 
       if (res.status === 201) {
-        navigate("/login"); // redirige al login
+        // 🚀 Guardar usuario automáticamente después del registro
+        login(data.usuario);
+
+        if (data.usuario.nombre.toLowerCase() === "admin") {
+          navigate("/"); // admin al home general
+        } else {
+          navigate("/homeClientes"); // cliente al home
+        }
       } else {
         setError(data.error || "Error en registro");
       }

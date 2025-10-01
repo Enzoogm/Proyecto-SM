@@ -6,7 +6,7 @@ function Productos({ onAgregarAlCarrito }) {
   const [cantidades, setCantidades] = useState({});
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/productos") // Cambia la ruta si es necesario
+    fetch("http://127.0.0.1:5000/api/productos/all") // ✅ corregido
       .then((res) => res.json())
       .then((data) => {
         setProductos(data);
@@ -43,14 +43,15 @@ function Productos({ onAgregarAlCarrito }) {
               <img
                 src={`/static/img/productos/${p.id_producto}.jpg`}
                 className="card-img-top"
-                alt={p.nombre}
+                alt={p.nombre_prod} // ✅ corregido
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "/static/img/no-image.png";
                 }}
               />
               <div className="card-body">
-                <h5 className="card-title">{p.nombre}</h5>
+                <h5 className="card-title">{p.nombre_prod}</h5>{" "}
+                {/* ✅ corregido */}
                 <p className="card-text">
                   <strong>${p.precio}</strong>
                 </p>

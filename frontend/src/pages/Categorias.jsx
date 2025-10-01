@@ -5,7 +5,7 @@ export function Categorias() {
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/categoria") // Cambia la ruta si tu API es diferente
+    fetch("http://127.0.0.1:5000/api/categorias") // Cambia la ruta si tu API es diferente
       .then((res) => res.json())
       .then((data) => setCategorias(data))
       .catch((err) => console.error(err));
@@ -17,7 +17,7 @@ export function Categorias() {
       <ul className="list-group">
         {categorias.map(({ id_categoria, nombre_cat }) => (
           <li key={id_categoria} className="list-group-item">
-            <Link to={`/productos/categoria/${id_categoria}`}>
+            <Link to={`/productos/categorias/${id_categoria}`}>
               {nombre_cat}
             </Link>
           </li>

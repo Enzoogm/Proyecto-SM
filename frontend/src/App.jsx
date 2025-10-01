@@ -9,16 +9,18 @@ import Carrito from "./pages/Carrito.jsx";
 import Pagos from "./pages/Pagos.jsx";
 import Login from "./pages/Login.jsx";
 import Registro from "./pages/Registro.jsx";
-import { useAuth } from "./context/AuthContext.jsx";
+import ProductosPorCategoria from "./pages/Productos_categoria.jsx";
+import { useAuth } from "./context/AuthContext.jsx"; // 👈 Importar AuthContext
 
 function App() {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
-  // 🚀 Llamada al backend Flask
+  const { usuario, logout } = useAuth(); // 👈 Traer usuario global
+
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/api/productos")
+      .get("http://127.0.0.1:5000/api/productos/all") // 👈 corregido endpoint
       .then((res) => setProductos(res.data))
       .catch((err) => console.error("Error cargando productos:", err));
 
@@ -36,7 +38,8 @@ function App() {
           <Home
             categorias={categorias}
             productos={productos}
-            usuario={null} // después conectás con tu AuthContext
+            usuario={usuario} // 👈 ya no es null
+            onLogout={logout} // 👈 logout real
           />
         }
       />
@@ -45,6 +48,7 @@ function App() {
         path="/categorias"
         element={<Categorias categorias={categorias} />}
       />
+      <Route path="/categorias/:id" element={<ProductosPorCategoria />} />
       <Route path="/carrito" element={<Carrito />} />
       <Route path="/pagos" element={<Pagos />} />
       <Route path="/login" element={<Login />} />
@@ -52,7 +56,12 @@ function App() {
       <Route
         path="/homeClientes"
         element={
-          <Home categorias={categorias} productos={productos} usuario={null} />
+          <Home
+            categorias={categorias}
+            productos={productos}
+            usuario={usuario}
+            onLogout={logout}
+          />
         }
       />
     </Routes>
