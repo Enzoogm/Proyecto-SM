@@ -1,16 +1,20 @@
 // src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // 👈 agregado
 import { useCart } from "../components/CartContext.jsx";
-import { useAuth } from "../components/AuthContext.jsx";
+import { useAuth } from "../components/AuthContext.jsx"; // 👈 agregado
 import "../styles/Home.css";
 
 function Home({ busqueda, setBusqueda }) {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [cantidades, setCantidades] = useState({});
+  const [mostrarCategorias, setMostrarCategorias] = useState(true);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); // 👈 para filtrar
   const { agregarAlCarrito } = useCart();
+  const { usuario } = useAuth(); // 👈 para saber si es admin
 
+  // Cargar productos
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/productos/all")
       .then((res) => res.json())
@@ -25,6 +29,7 @@ function Home({ busqueda, setBusqueda }) {
       .catch((err) => console.error("Error cargando productos:", err));
   }, []);
 
+  // Cargar categorías
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/categorias")
       .then((res) => res.json())
@@ -32,6 +37,7 @@ function Home({ busqueda, setBusqueda }) {
       .catch((err) => console.error("Error cargando categorías:", err));
   }, []);
 
+  // Cambiar cantidad de producto
   const manejarCambioCantidad = (id, valor) => {
     setCantidades({
       ...cantidades,
@@ -39,32 +45,75 @@ function Home({ busqueda, setBusqueda }) {
     });
   };
 
+  // Agregar al carrito
   const handleAgregar = (producto) => {
     const cantidad = cantidades[producto.id] || 1;
     agregarAlCarrito(producto, cantidad);
   };
 
-  const productosFiltrados = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  // Filtrado por búsqueda y categoría
+  const productosFiltrados = productos.filter((p) => {
+    const matchBusqueda = p.nombre
+      .toLowerCase()
+      .includes(busqueda.toLowerCase());
+    const matchCategoria = categoriaSeleccionada
+      ? p.id_categoria === categoriaSeleccionada
+      : true;
+    return matchBusqueda && matchCategoria;
+  });
 
   return (
     <div className="container">
-      {/* Sidebar categorías */}
-      <aside className="sidebar">
-        <h2>Categorías</h2>
-        <ul>
-          {categorias.map((c) => (
-            <li key={c.id}>
-              <Link to={`/categorias/${c.id}`}>{c.nombre}</Link>
+      {/* Sidebar Categorías */}
+      <div className="sidebar">
+        <h2
+          onClick={() => setMostrarCategorias(!mostrarCategorias)}
+          className={`categorias-titulo ${mostrarCategorias ? "abierto" : ""}`}
+        >
+          Categorías
+        </h2>
+
+        <div
+          className={`categorias-menu ${mostrarCategorias ? "mostrar" : ""}`}
+        >
+          <ul>
+            {categorias.length > 0 ? (
+              categorias.map((c) => (
+                <li key={c.id}>
+                  <button
+                    className="categoria-btn"
+                    onClick={() => setCategoriaSeleccionada(c.id)}
+                  >
+                    {c.nombre}
+                  </button>
+                </li>
+              ))
+            ) : (
+              <li>Cargando categorías...</li>
+            )}
+            <li>
+              <button
+                className="categoria-btn"
+                onClick={() => setCategoriaSeleccionada(null)}
+              >
+                Todas
+              </button>
             </li>
-          ))}
-        </ul>
-      </aside>
+          </ul>
+        </div>
+      </div>
 
       {/* Productos */}
       <main className="productos">
         <h2>Productos</h2>
+
+        {/* 👑 Link al panel admin */}
+        {usuario?.rol === "admin" && (
+          <div className="admin-link">
+            <Link to="/admin">👑 Ir al Panel de Administración</Link>
+          </div>
+        )}
+
         <div className="grid">
           {productosFiltrados.map((p) => (
             <div key={p.id} className="card">

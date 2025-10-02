@@ -15,8 +15,16 @@ export const AuthProvider = ({ children }) => {
 
   // Guarda usuario en state y localStorage
   const login = (user) => {
-    setUsuario(user);
-    localStorage.setItem("usuario", JSON.stringify(user));
+    // Nos aseguramos de que siempre tenga un rol
+    const userWithRole = {
+      id: user.id,
+      nombre: user.nombre,
+      email: user.email,
+      rol: user.rol || "cliente", // 👈 si no viene, cliente por defecto
+    };
+
+    setUsuario(userWithRole);
+    localStorage.setItem("usuario", JSON.stringify(userWithRole));
   };
 
   const logout = () => {

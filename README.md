@@ -3,7 +3,7 @@ source .venv/bin/activate
 pip install flask
 pip install mysql-connector-python
 pip install flask-cors
-
+pip install python-dotenv
 python -m supermercado.app
 
 npm init -y
@@ -16,8 +16,6 @@ npm install
 npm install axios
 npm install bootstrap
 npm install react-router-dom
-
-# Para estilos (opcional, pero recomendable)
 
 npm run dev
 

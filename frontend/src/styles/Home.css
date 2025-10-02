@@ -76,12 +76,19 @@
 /* =======================
    Layout
 ======================= */
+main {
+  margin-top: 70px; /* altura del header */
+}
+
 .container {
   display: flex;
-  padding: 100px 20px 20px; /* 👈 bajamos contenido por header fijo */
+  padding: 20px;
   gap: 20px;
 }
 
+/* =======================
+   Sidebar categorías
+======================= */
 /* =======================
    Sidebar categorías
 ======================= */
@@ -94,29 +101,80 @@
   height: fit-content;
 }
 
-.sidebar h2 {
-  margin-bottom: 15px;
+.categorias-titulo {
+  margin: 0 0 10px 0;
   font-size: 1.3rem;
+  font-weight: bold;
   border-bottom: 2px solid #ddd;
   padding-bottom: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.sidebar ul {
+/* Flechita al costado */
+.categorias-titulo::after {
+  content: "▶";
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.categorias-titulo.abierto::after {
+  transform: rotate(90deg);
+}
+
+/* Menú animado estilo "caída" */
+/* Menú animado estilo "caída con rebote" */
+.categorias-menu {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-10px);
+  transition: max-height 0.4s ease;
+}
+
+.categorias-menu.mostrar {
+  max-height: 500px;
+  opacity: 1;
+  animation: dropdownBounce 0.45s ease forwards;
+}
+
+/* Animación caída con rebote */
+@keyframes dropdownBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    transform: translateY(4px); /* pequeño rebote hacia abajo */
+  }
+  100% {
+    transform: translateY(0); /* queda en su posición */
+  }
+}
+
+.categorias-menu ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.sidebar li {
+.categorias-menu li {
   margin-bottom: 10px;
 }
 
-.sidebar a {
+.categorias-menu a {
   text-decoration: none;
   color: #333;
   transition: color 0.3s;
 }
 
-.sidebar a:hover {
+.categorias-menu a:hover {
   color: #e63946;
   font-weight: bold;
 }
@@ -187,4 +245,98 @@
 .btn-agregar:disabled {
   background: #aaa;
   cursor: not-allowed;
+}
+
+/* =======================
+   Responsive
+======================= */
+@media (max-width: 992px) {
+  .busqueda {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .busqueda {
+    width: 100%;
+  }
+
+  .acciones-usuario {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .container {
+    flex-direction: column; /* sidebar pasa abajo */
+  }
+
+  .sidebar {
+    width: 100%;
+    order: 2; /* 👈 sidebar baja debajo */
+  }
+
+  .productos {
+    order: 1; /* 👈 productos primero */
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr; /* 2 columnas en tablet */
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr; /* 1 columna en celular */
+  }
+}
+/* =======================
+   Botones de categorías
+======================= */
+.categoria-btn {
+  width: 100%;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.categoria-btn:hover {
+  background: #e63946;
+  color: #fff;
+  transform: translateX(3px);
+}
+
+/* =======================
+   Link al panel admin
+======================= */
+.admin-link {
+  margin: 15px 0;
+  text-align: right;
+}
+
+.admin-link a {
+  display: inline-block;
+  background: #1d3557;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.admin-link a:hover {
+  background: #457b9d;
+  transform: scale(1.05);
 }

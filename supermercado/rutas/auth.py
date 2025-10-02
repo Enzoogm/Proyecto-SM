@@ -23,10 +23,11 @@ def registro():
     hashed_password = generate_password_hash(password)
 
     try:
+        # 👇 siempre asigna rol cliente al registrarse
         cursor.execute("""
-            INSERT INTO Usuarios (nombre, email, password)
-            VALUES (%s, %s, %s)
-        """, (nombre, email, hashed_password))
+            INSERT INTO Usuarios (nombre, email, password, rol)
+            VALUES (%s, %s, %s, %s)
+        """, (nombre, email, hashed_password, "cliente"))
         db.commit()
         user_id = cursor.lastrowid
 
@@ -35,7 +36,8 @@ def registro():
             'usuario': {
                 'id': user_id,
                 'nombre': nombre,
-                'email': email
+                'email': email,
+                'rol': "cliente"
             }
         }), 201
     except Exception as e:
@@ -72,7 +74,8 @@ def login():
             'usuario': {
                 'id': usuario['id_usuario'],
                 'nombre': usuario['nombre'],
-                'email': usuario['email']
+                'email': usuario['email'],
+                'rol': usuario['rol']  # 👈 devolvemos el rol que tiene en la DB
             }
         }), 200
     else:

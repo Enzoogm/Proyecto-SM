@@ -1,5 +1,5 @@
 // src/App.jsx
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -11,8 +11,11 @@ import Pagos from "./pages/Pagos.jsx";
 import Login from "./pages/Login.jsx";
 import Registro from "./pages/Registro.jsx";
 import ProductosPorCategoria from "./pages/Productos_categoria.jsx";
-import Layout from "./components/Layout.jsx"; // 👈 importante
+import Layout from "./components/Layout.jsx";
 import { useAuth } from "./components/AuthContext.jsx";
+
+// 👑 Importamos el Admin completo
+import Admin from "./pages/Admin.jsx";
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -101,6 +104,20 @@ function App() {
       />
       <Route path="/login" element={<Login />} />
       <Route path="/registro" element={<Registro />} />
+
+      {/* 👑 Panel Admin */}
+      <Route
+        path="/admin"
+        element={
+          usuario?.rol === "admin" ? (
+            <Layout>
+              <Admin />
+            </Layout>
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
     </Routes>
   );
 }

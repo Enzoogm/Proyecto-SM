@@ -17,6 +17,11 @@ def obtener_cupones():
             WHERE activo = TRUE AND fecha_expiracion >= CURDATE()
         """)
         cupones = cursor.fetchall()
+
+        # 🔥 Convertimos a float siempre que haya descuento
+        for c in cupones:
+            c["descuento"] = float(c["descuento"])
+
         return jsonify(cupones), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -60,10 +65,10 @@ def crear_pago():
             )
             cupon = cursor.fetchone()
             if cupon:
-                # Por ahora asumimos que el descuento es un valor fijo (ej: $200)
-                descuento_total += cupon["descuento"]
+                # 🔥 Convertimos el decimal a float antes de sumarlo
+                descuento_total += float(cupon["descuento"])
 
-        total_final = max(subtotal - descuento_total, 0)
+        total_final = max(subtotal - descuento_total, 0.0)
 
         # Insertar Venta
         cursor.execute(

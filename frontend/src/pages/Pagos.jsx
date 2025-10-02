@@ -57,12 +57,43 @@ export default function Pagos() {
     }
   };
 
+  // 👉 Formateo del número de tarjeta
+  const handleNumeroChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // solo números
+    value = value.slice(0, 16); // máximo 16 dígitos
+    value = value.replace(/(.{4})/g, "$1 ").trim(); // espacio cada 4
+    setDatos({ ...datos, numero: value });
+  };
+
+  // 👉 Formateo del vencimiento (MM/AA)
+  const handleVencimientoChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // solo números
+    value = value.slice(0, 4); // máximo 4 dígitos
+    if (value.length >= 3) {
+      value = value.slice(0, 2) + "/" + value.slice(2);
+    }
+    setDatos({ ...datos, vencimiento: value });
+  };
+
+  // 👉 Validación mínima antes de enviar
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!usuario) {
       alert("⚠️ Debes iniciar sesión para poder comprar.");
       navigate("/login");
       return;
+    }
+
+    if (metodo === "tarjeta") {
+      if (
+        !datos.nombre ||
+        datos.numero.length < 19 ||
+        datos.vencimiento.length < 5 ||
+        datos.cvv.length < 3
+      ) {
+        alert("⚠️ Completa todos los datos de la tarjeta correctamente.");
+        return;
+      }
     }
 
     try {
@@ -138,23 +169,24 @@ export default function Pagos() {
               name="numero"
               placeholder="Número de tarjeta"
               value={datos.numero}
-              onChange={(e) => setDatos({ ...datos, numero: e.target.value })}
+              onChange={handleNumeroChange}
             />
             <input
               type="text"
               name="vencimiento"
               placeholder="MM/AA"
               value={datos.vencimiento}
-              onChange={(e) =>
-                setDatos({ ...datos, vencimiento: e.target.value })
-              }
+              onChange={handleVencimientoChange}
             />
             <input
               type="text"
               name="cvv"
               placeholder="CVV"
               value={datos.cvv}
-              onChange={(e) => setDatos({ ...datos, cvv: e.target.value })}
+              onChange={(e) => {
+                let value = e.target.value.replace(/\D/g, "").slice(0, 3);
+                setDatos({ ...datos, cvv: value });
+              }}
             />
           </div>
         )}
