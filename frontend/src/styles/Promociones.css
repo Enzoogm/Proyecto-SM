@@ -1,0 +1,65 @@
+/* src/styles/Promociones.css */
+.promociones-container {
+  width: 100%;
+  background-color: #f1faee;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 80px; /* Asegura que se vea bien sobre el contenido principal */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.promocion-banner {
+  background-color: #e63946;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.promocion-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+
+.promocion-banner:hover {
+  background-color: #ba2d3b;
+  transform: scale(1.02);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+/* Promociones */
+.promociones-banner {
+  width: 100%;
+  background: linear-gradient(135deg, #f1faee, #e63946);
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  position: relative;
+  margin-top: 90px; /* Ajustamos la separación con el header */
+}
+
+.promociones-banner p {
+  margin: 0;
+}
+
+.promociones-banner span {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.promociones-banner .icono {
+  position: absolute;
+  right: 15px;
+  bottom: 10px;
+  font-size: 2rem;
+}

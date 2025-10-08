@@ -1,4 +1,4 @@
-/* src/styles/header.css */
+/* Barra de navegación */
 .header {
   position: fixed;
   top: 0;
@@ -10,76 +10,78 @@
   align-items: center;
   background-color: #e63946;
   color: white;
-  padding: 10px 20px;
+  padding: 15px 30px; /* Barra más ancha y espaciosa */
+  border-radius: 25px; /* Redondeamos los bordes */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin: 0 auto; /* Centramos el contenido */
 }
 
-/* Ajusta el espacio debajo del header */
-main,
-.container {
-  margin-top: 70px; /* un poco más para que no quede tan pegado */
-}
-
+/* Logo */
 .logo a {
   color: white;
   text-decoration: none;
-  font-size: 1.6rem;
+  font-size: 1.8rem; /* Un poco más grande */
   font-weight: bold;
 }
 
-.logo a:hover {
-  text-decoration: underline;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
+/* Barra de búsqueda */
 .busqueda {
-  padding: 6px 12px;
-  border-radius: 5px;
+  padding: 10px 20px;
+  border-radius: 25px; /* Redondeamos más la búsqueda */
   border: none;
-  width: 250px;
+  width: 350px; /* Barra más ancha */
   outline: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo de las acciones del usuario */
 .acciones-usuario {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px; /* Más espacio entre los elementos */
 }
 
+/* Enlaces de carrito y login */
 .carrito-link,
 .login-link {
   color: white;
   text-decoration: none;
   font-weight: bold;
+  font-size: 1.1rem; /* Un poco más grande para mejor visibilidad */
 }
 
 .carrito-link:hover,
 .login-link:hover {
   text-decoration: underline;
+  color: #f1faee;
 }
 
-/* =======================
-   Botón cerrar sesión
-======================= */
+/* Botón de logout */
 .btn-logout {
   background: #fff;
   color: #e63946;
   border: none;
-  padding: 6px 16px;
-  border-radius: 20px; /* 👈 estilo pill */
+  padding: 8px 20px;
+  border-radius: 25px; /* Botón más redondeado */
   cursor: pointer;
   font-weight: bold;
-  margin-left: 10px; /* 👈 separación del texto "Hola, usuario" */
+  margin-left: 20px; /* Para que no se "corte" con el borde */
   transition: all 0.3s ease;
 }
 
 .btn-logout:hover {
   background: #e63946;
   color: #fff;
-  transform: scale(1.05); /* 👈 leve zoom */
+  transform: scale(1.05);
+}
+
+/* Ajustes para móviles */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 20px;
+  }
+
+  .busqueda {
+    width: 250px; /* Menos ancho en dispositivos pequeños */
+  }
 }

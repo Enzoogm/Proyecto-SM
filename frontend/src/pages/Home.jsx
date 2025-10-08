@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../components/CartContext.jsx";
 import { useAuth } from "../components/AuthContext.jsx";
 import "../styles/Home.css";
+import Promociones from "../components/Promociones"; // Importa el componente de promociones
 
 function Home({ busqueda, setBusqueda }) {
   const [productos, setProductos] = useState([]);
@@ -11,6 +12,8 @@ function Home({ busqueda, setBusqueda }) {
   const [mostrarCategorias, setMostrarCategorias] = useState(true);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [productosPorPagina] = useState(10); // Número de productos por página
 
   const { agregarAlCarrito } = useCart();
   const { usuario } = useAuth();
@@ -61,6 +64,16 @@ function Home({ busqueda, setBusqueda }) {
     return matchBusqueda && matchCategoria;
   });
 
+  const indexOfLastProduct = paginaActual * productosPorPagina;
+  const indexOfFirstProduct = indexOfLastProduct - productosPorPagina;
+  const productosPagina = productosFiltrados.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+  const totalPaginas = Math.ceil(
+    productosFiltrados.length / productosPorPagina
+  );
+
   if (loading) {
     return (
       <div className="loader-container">
@@ -70,8 +83,13 @@ function Home({ busqueda, setBusqueda }) {
     );
   }
 
+  const cambiarPagina = (pagina) => {
+    setPaginaActual(pagina);
+  };
+
   return (
     <div className="container">
+      {/* Sidebar Categorías */}
       <div className="sidebar">
         <h2
           onClick={() => setMostrarCategorias(!mostrarCategorias)}
@@ -111,35 +129,37 @@ function Home({ busqueda, setBusqueda }) {
         </div>
       </div>
 
+      {/* Productos */}
       <main className="productos">
+        <Promociones /> {/* Banner de promociones */}
         <h2>Productos</h2>
-
         {usuario?.rol === "admin" && (
           <div className="admin-link">
             <Link to="/admin">👑 Ir al Panel de Administración</Link>
           </div>
         )}
-
         {productosFiltrados.length === 0 ? (
           <p>No se encontraron productos.</p>
         ) : (
-          <div className="grid">
-            {productosFiltrados.map((p) => (
-              <div key={p.id_producto} className="card">
-                <img
-                  src={p.imagen_url ? p.imagen_url : "/static/img/no-image.png"}
-                  alt={p.nombre_prod}
-                  className="producto-img"
-                />
-                <h3>{p.nombre_prod}</h3>
-                <p>{p.descripcion}</p>
-                <p>
-                  <strong>${p.precio}</strong>
-                </p>
-                <p>{p.stock > 0 ? `Stock: ${p.stock}` : "Agotado"}</p>
+          <>
+            <div className="grid">
+              {productosPagina.map((p) => (
+                <div key={p.id_producto} className="card">
+                  <img
+                    src={
+                      p.imagen_url ? p.imagen_url : "/static/img/no-image.png"
+                    }
+                    alt={p.nombre_prod}
+                    className="producto-img"
+                  />
+                  <h3>{p.nombre_prod}</h3>
+                  <p>{p.descripcion}</p>
+                  <p>
+                    <strong>${p.precio}</strong>
+                  </p>
+                  <p>{p.stock > 0 ? `Stock: ${p.stock}` : "Agotado"}</p>
 
-                {/* Contador + botón alineados */}
-                <div className="acciones-producto">
+                  {/* Contador elegante */}
                   <div className="cantidad-selector">
                     <button
                       type="button"
@@ -178,9 +198,26 @@ function Home({ busqueda, setBusqueda }) {
                     {p.stock > 0 ? "Agregar" : "Agotado"}
                   </button>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Paginación debajo de los productos */}
+            <div className="paginacion">
+              {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
+                (num) => (
+                  <button
+                    key={num}
+                    className={`pagina-btn ${
+                      paginaActual === num ? "activa" : ""
+                    }`}
+                    onClick={() => cambiarPagina(num)}
+                  >
+                    {num}
+                  </button>
+                )
+              )}
+            </div>
+          </>
         )}
       </main>
     </div>
