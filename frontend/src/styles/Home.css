@@ -38,7 +38,7 @@
   border-radius: 30px;
   border: none;
   outline: none;
-  width: 300px;
+  width: 350px; /* Barra más ancha */
   font-size: 0.95rem;
   transition: all 0.3s ease;
 }
@@ -210,10 +210,7 @@ main {
   align-items: center;
   justify-content: center;
   background: #f1f1f1;
-  border-radius: 30px;
-  overflow: hidden;
-  border: 1px solid #ddd;
-  transition: box-shadow 0.3s ease;
+  border: 1px solid #ddd; /* Borde simple */
   margin-bottom: 12px; /* Aseguramos un poco de espacio con el resto */
   padding: 5px;
 }
@@ -235,7 +232,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
 }
 
 .btn-cantidad:hover {
@@ -268,7 +264,7 @@ main {
   background: #e63946;
   color: #fff;
   border: none;
-  border-radius: 20px;
+  border-radius: 4px; /* Flechas más cuadradas */
   cursor: pointer;
   font-weight: 600;
   transition: background 0.3s ease;
@@ -280,4 +276,42 @@ main {
 
 .pagina-btn.activa {
   background: #457b9d;
+}
+
+.paginacion .pagina-btn:first-child,
+.paginacion .pagina-btn:last-child {
+  padding: 8px 10px; /* Ajustamos el tamaño para las flechas */
+}
+
+/* Flechas de paginación */
+.paginacion .pagina-btn:first-child {
+  background: #e63946;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginacion .pagina-btn:last-child {
+  background: #e63946;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginacion .pagina-btn:first-child::before {
+  content: "<";
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.paginacion .pagina-btn:last-child::before {
+  content: ">";
+  font-size: 1.5rem;
+  color: #fff;
 }

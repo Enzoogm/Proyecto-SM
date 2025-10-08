@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../components/CartContext.jsx";
 import { useAuth } from "../components/AuthContext.jsx";
 import "../styles/Home.css";
-import Promociones from "../components/Promociones"; // Importa el componente de promociones
+import Promociones from "../components/Promociones";
 
 function Home({ busqueda, setBusqueda }) {
   const [productos, setProductos] = useState([]);
@@ -74,14 +74,26 @@ function Home({ busqueda, setBusqueda }) {
     productosFiltrados.length / productosPorPagina
   );
 
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <div className="spinner"></div>
-        <p>Cargando productos...</p>
-      </div>
-    );
-  }
+  // Lógica para mostrar las páginas cercanas a la página actual y las flechas
+  const generarRangoPaginas = () => {
+    let rango = [];
+    let inicio = Math.max(paginaActual - 1, 1);
+    let fin = Math.min(paginaActual + 1, totalPaginas);
+
+    if (inicio > 1) {
+      rango = [1];
+    }
+
+    for (let i = inicio; i <= fin; i++) {
+      rango.push(i);
+    }
+
+    if (fin < totalPaginas) {
+      rango.push(totalPaginas);
+    }
+
+    return rango;
+  };
 
   const cambiarPagina = (pagina) => {
     setPaginaActual(pagina);
@@ -201,21 +213,47 @@ function Home({ busqueda, setBusqueda }) {
               ))}
             </div>
 
-            {/* Paginación debajo de los productos */}
+            {/* Paginación con flechas dobles */}
             <div className="paginacion">
-              {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(
-                (num) => (
-                  <button
-                    key={num}
-                    className={`pagina-btn ${
-                      paginaActual === num ? "activa" : ""
-                    }`}
-                    onClick={() => cambiarPagina(num)}
-                  >
-                    {num}
-                  </button>
-                )
-              )}
+              <button
+                className="pagina-btn flecha-doble"
+                onClick={() => cambiarPagina(1)}
+                disabled={paginaActual === 1}
+              >
+                &laquo;
+              </button>
+              <button
+                className="pagina-btn flecha"
+                onClick={() => cambiarPagina(paginaActual - 1)}
+                disabled={paginaActual === 1}
+              >
+                &lt;
+              </button>
+              {generarRangoPaginas().map((num) => (
+                <button
+                  key={num}
+                  className={`pagina-btn ${
+                    paginaActual === num ? "activa" : ""
+                  }`}
+                  onClick={() => cambiarPagina(num)}
+                >
+                  {num}
+                </button>
+              ))}
+              <button
+                className="pagina-btn flecha"
+                onClick={() => cambiarPagina(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+              >
+                &gt;
+              </button>
+              <button
+                className="pagina-btn flecha-doble"
+                onClick={() => cambiarPagina(totalPaginas)}
+                disabled={paginaActual === totalPaginas}
+              >
+                &raquo;
+              </button>
             </div>
           </>
         )}
