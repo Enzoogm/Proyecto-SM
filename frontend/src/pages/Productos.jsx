@@ -1,4 +1,3 @@
-// src/pages/Productos.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Productos.css";
@@ -8,7 +7,7 @@ function Productos({ onAgregarAlCarrito }) {
   const [cantidades, setCantidades] = useState({});
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/productos/all")
+    fetch("http://127.0.0.1:5000/api/productos")
       .then((res) => res.json())
       .then((data) => {
         setProductos(data);
@@ -41,7 +40,7 @@ function Productos({ onAgregarAlCarrito }) {
         {productos.map((p) => (
           <div className="producto-card" key={p.id_producto}>
             <img
-              src={`/static/img/productos/${p.id_producto}.jpg`}
+              src={p.imagen_url}
               alt={p.nombre_prod}
               className="producto-img"
               onError={(e) => {

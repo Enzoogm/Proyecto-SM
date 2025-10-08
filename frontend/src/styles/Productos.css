@@ -1,108 +1,243 @@
+/* ================================
+   PRODUCTOS (Página principal)
+================================ */
+
 .productos-container {
-  padding: 20px;
+  padding: 40px;
+  background-color: #f8f9fa;
 }
 
 .productos-titulo {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #1d3557;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
 .productos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+  justify-items: center;
 }
 
+/* Card */
 .producto-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
   background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 
+.producto-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen centrada */
 .producto-img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-bottom: 1px solid #eee;
+  height: 200px;
+  object-fit: contain;
+  background-color: #f4f4f4;
 }
 
+/* Info */
 .producto-body {
-  padding: 10px;
+  padding: 15px;
   text-align: center;
 }
 
 .producto-body h5 {
-  margin: 0;
-  font-size: 1.1rem;
+  color: #1d3557;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.producto-body strong {
+  color: #e63946;
+  font-size: 1.2rem;
+  display: block;
 }
 
 .stock-ok {
-  color: green;
-  font-weight: bold;
+  color: #2a9d8f;
+  font-weight: 600;
 }
 
 .stock-no {
-  color: red;
-  font-weight: bold;
+  color: #e63946;
+  font-weight: 600;
 }
 
+/* Footer */
 .producto-footer {
-  padding: 10px;
+  padding: 15px;
   border-top: 1px solid #eee;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .form-agregar {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 10px;
 }
 
 .input-cantidad {
-  width: 60px;
-  padding: 5px;
+  width: 70px;
   text-align: center;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 .btn-agregar {
-  padding: 6px 12px;
-  background: #2a9d8f;
+  background: linear-gradient(135deg, #e63946, #ba2d3b);
   color: white;
+  padding: 8px 14px;
   border: none;
-  border-radius: 5px;
+  border-radius: 25px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-agregar:hover {
+  background: linear-gradient(135deg, #ba2d3b, #e63946);
+  transform: scale(1.05);
 }
 
 .btn-agregar:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
+/* ================================
+   SELECTOR DE CANTIDAD 
+================================ */
+.cantidad-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1f1;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  transition: box-shadow 0.3s ease;
+}
 
-.productos-acciones {
-  margin-top: 20px;
+.cantidad-selector:hover {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cantidad {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background: #e63946;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cantidad:hover {
+  background: #ba2d3b;
+  transform: scale(1.1);
+}
+
+.cantidad {
+  width: 45px;
   text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1d3557;
+  background: transparent;
+  padding: 0 8px;
+}
+/* ================================
+   CONTADOR + BOTÓN ALINEADOS
+================================ */
+.acciones-producto {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.btn-ver-carrito {
-  padding: 10px 15px;
-  background: #f4a261;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
+/* Contador */
+.cantidad-selector {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.btn-volver {
-  padding: 10px 15px;
-  background: #457b9d;
+.btn-cantidad {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #e63946;
   color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cantidad:hover {
+  background: #ba2d3b;
+  transform: scale(1.1);
+}
+
+.cantidad {
+  width: 35px;
+  text-align: center;
+  font-weight: 600;
+  color: #1d3557;
+  font-size: 1rem;
+  transition: transform 0.15s ease;
+}
+
+/* ✨ Pequeño efecto pop */
+.cantidad:active {
+  transform: scale(1.2);
+}
+
+/* Botón principal */
+.btn-agregar {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #e63946, #ba2d3b);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-agregar:hover {
+  background: linear-gradient(135deg, #ba2d3b, #e63946);
+  transform: scale(1.05);
+}
+
+.btn-agregar:disabled {
+  background: #bbb;
+  cursor: not-allowed;
 }

@@ -1,8 +1,6 @@
-// src/pages/Productos_categoria.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "../components/CartContext.jsx";
-import { useAuth } from "../components/AuthContext.jsx";
 import "../styles/ProductosCategoria.css";
 
 function ProductosPorCategoria() {
@@ -31,10 +29,10 @@ function ProductosPorCategoria() {
       });
   }, [id]);
 
-  const manejarCambioCantidad = (id, valor) => {
+  const manejarCambioCantidad = (id_producto, valor) => {
     setCantidades({
       ...cantidades,
-      [id]: Math.max(1, parseInt(valor) || 1),
+      [id_producto]: Math.max(1, parseInt(valor) || 1),
     });
   };
 
@@ -62,6 +60,15 @@ function ProductosPorCategoria() {
         <div className="grid">
           {productos.map((p) => (
             <div key={p.id_producto} className="card">
+              <img
+                src={p.imagen_url}
+                alt={p.nombre_prod}
+                className="producto-img"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/static/img/no-image.png";
+                }}
+              />
               <h3>{p.nombre_prod}</h3>
               <p>{p.descripcion}</p>
               <p>

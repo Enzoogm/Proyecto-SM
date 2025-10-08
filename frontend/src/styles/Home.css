@@ -1,11 +1,23 @@
-/* =======================
-   Barra superior
-======================= */
+/* ================================
+   FUENTE Y RESET
+================================ */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================================
+   NAVBAR
+================================ */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  padding: 12px 25px;
   background-color: #e63946;
   color: #fff;
   position: fixed;
@@ -13,301 +25,97 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 .logo {
-  font-size: 1.6rem;
-  font-weight: bold;
+  font-size: 1.7rem;
+  font-weight: 700;
 }
 
 .busqueda {
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  width: 280px;
+  padding: 8px 15px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  width: 300px;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
 }
 
 .busqueda:focus {
-  outline: none;
-  border-color: #1d3557;
-  box-shadow: 0 0 5px rgba(29, 53, 87, 0.3);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .acciones-usuario {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 18px;
 }
 
 .carrito-link,
 .login-link {
   color: #fff;
   text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s;
+  font-weight: 500;
+  transition: opacity 0.3s;
 }
 
 .carrito-link:hover,
 .login-link:hover {
-  color: #f1faee;
+  opacity: 0.8;
 }
 
-.usuario {
-  margin-right: 10px;
-  font-weight: 500;
-}
-
-.btn-logout {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 20px;
-  background-color: #1d3557;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.btn-logout:hover {
-  background-color: #27496d;
-}
-
-/* =======================
-   Layout
-======================= */
+/* ================================
+   LAYOUT
+================================ */
 main {
-  margin-top: 70px; /* altura del header */
+  margin-top: 80px;
 }
 
 .container {
   display: flex;
-  padding: 20px;
-  gap: 20px;
+  padding: 25px;
+  gap: 30px;
+  background: #f8f9fa;
 }
 
-/* =======================
-   Sidebar categorías
-======================= */
-/* =======================
-   Sidebar categorías
-======================= */
+/* ================================
+   SIDEBAR CATEGORÍAS
+================================ */
 .sidebar {
-  width: 220px;
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 10px;
+  width: 230px;
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
   border: 1px solid #ddd;
   height: fit-content;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .categorias-titulo {
-  margin: 0 0 10px 0;
-  font-size: 1.3rem;
-  font-weight: bold;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 5px;
-  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-}
-
-/* Flechita al costado */
-.categorias-titulo::after {
-  content: "▶";
-  font-size: 0.9rem;
-  transition: transform 0.3s ease;
-}
-
-.categorias-titulo.abierto::after {
-  transform: rotate(90deg);
-}
-
-/* Menú animado estilo "caída" */
-/* Menú animado estilo "caída con rebote" */
-.categorias-menu {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transform: translateY(-10px);
-  transition: max-height 0.4s ease;
-}
-
-.categorias-menu.mostrar {
-  max-height: 500px;
-  opacity: 1;
-  animation: dropdownBounce 0.45s ease forwards;
-}
-
-/* Animación caída con rebote */
-@keyframes dropdownBounce {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  80% {
-    transform: translateY(4px); /* pequeño rebote hacia abajo */
-  }
-  100% {
-    transform: translateY(0); /* queda en su posición */
-  }
 }
 
 .categorias-menu ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
-.categorias-menu li {
-  margin-bottom: 10px;
-}
-
-.categorias-menu a {
-  text-decoration: none;
-  color: #333;
-  transition: color 0.3s;
-}
-
-.categorias-menu a:hover {
-  color: #e63946;
-  font-weight: bold;
-}
-
-/* =======================
-   Productos
-======================= */
-.productos {
-  flex: 1;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  background: white;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-.card h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: #1d3557;
-}
-
-.card p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #555;
-}
-
-.card strong {
-  font-size: 1.1rem;
-  color: #e63946;
-}
-
-.btn-agregar {
-  margin-top: auto;
-  padding: 10px;
-  background: #457b9d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.btn-agregar:hover {
-  background: #1d3557;
-  transform: scale(1.05);
-}
-
-.btn-agregar:disabled {
-  background: #aaa;
-  cursor: not-allowed;
-}
-
-/* =======================
-   Responsive
-======================= */
-@media (max-width: 992px) {
-  .busqueda {
-    width: 200px;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .busqueda {
-    width: 100%;
-  }
-
-  .acciones-usuario {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .container {
-    flex-direction: column; /* sidebar pasa abajo */
-  }
-
-  .sidebar {
-    width: 100%;
-    order: 2; /* 👈 sidebar baja debajo */
-  }
-
-  .productos {
-    order: 1; /* 👈 productos primero */
-  }
-
-  .grid {
-    grid-template-columns: 1fr 1fr; /* 2 columnas en tablet */
-  }
-}
-
-@media (max-width: 480px) {
-  .grid {
-    grid-template-columns: 1fr; /* 1 columna en celular */
-  }
-}
-/* =======================
-   Botones de categorías
-======================= */
 .categoria-btn {
   width: 100%;
   background: #f8f9fa;
   border: 1px solid #ddd;
-  border-radius: 20px;
+  border-radius: 25px;
   padding: 8px 12px;
   cursor: pointer;
-  text-align: left;
   font-size: 0.95rem;
-  color: #333;
+  margin-bottom: 10px;
   transition: all 0.3s ease;
 }
 
@@ -317,26 +125,237 @@ main {
   transform: translateX(3px);
 }
 
-/* =======================
-   Link al panel admin
-======================= */
-.admin-link {
-  margin: 15px 0;
-  text-align: right;
+/* ================================
+   GRID DE PRODUCTOS
+================================ */
+.productos {
+  flex: 1;
 }
 
-.admin-link a {
-  display: inline-block;
-  background: #1d3557;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+
+/* CARD DEL HOME */
+.card {
+  width: 100%;
+  max-width: 270px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* Texto dentro de la card */
+.card h3 {
+  font-size: 1.05rem;
+  color: #1d3557;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.card strong {
+  color: #e63946;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Botones */
+.btn-agregar {
+  margin-top: 8px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #e63946, #ba2d3b);
   color: #fff;
-  padding: 8px 16px;
-  border-radius: 20px;
-  text-decoration: none;
-  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
-.admin-link a:hover {
-  background: #457b9d;
+.btn-agregar:hover {
+  background: linear-gradient(135deg, #ba2d3b, #e63946);
   transform: scale(1.05);
+}
+
+.btn-agregar:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Contador de cantidad */
+input[type="number"] {
+  width: 60px;
+  text-align: center;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+  }
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .busqueda {
+    width: 90%;
+  }
+}
+/* ================================
+   SELECTOR DE CANTIDAD 
+================================ */
+.cantidad-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1f1;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  transition: box-shadow 0.3s ease;
+}
+
+.cantidad-selector:hover {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cantidad {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background: #e63946;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cantidad:hover {
+  background: #ba2d3b;
+  transform: scale(1.1);
+}
+
+.cantidad {
+  width: 45px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1d3557;
+  background: transparent;
+  padding: 0 8px;
+}
+/* ================================
+   CONTADOR + BOTÓN ALINEADOS
+================================ */
+.acciones-producto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Contador */
+.cantidad-selector {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.btn-cantidad {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #e63946;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cantidad:hover {
+  background: #ba2d3b;
+  transform: scale(1.1);
+}
+
+.cantidad {
+  width: 35px;
+  text-align: center;
+  font-weight: 600;
+  color: #1d3557;
+  font-size: 1rem;
+  transition: transform 0.15s ease;
+}
+
+/* ✨ Pequeño efecto pop */
+.cantidad:active {
+  transform: scale(1.2);
+}
+
+/* Botón principal */
+.btn-agregar {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #e63946, #ba2d3b);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-agregar:hover {
+  background: linear-gradient(135deg, #ba2d3b, #e63946);
+  transform: scale(1.05);
+}
+
+.btn-agregar:disabled {
+  background: #bbb;
+  cursor: not-allowed;
 }
