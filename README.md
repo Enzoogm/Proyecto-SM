@@ -16,6 +16,7 @@ npm install
 npm install axios
 npm install bootstrap
 npm install react-router-dom
+npm install swiper
 npm run dev
 
 export FLASK_APP=supermercado.app

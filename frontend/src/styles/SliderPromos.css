@@ -1,0 +1,374 @@
+.slider-container {
+  width: 100%;
+  height: 350px;
+  margin-top: 80px;
+}
+
+.slider-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-pagination-bullet {
+  background: #e63946;
+  opacity: 0.6;
+}
+
+.swiper-pagination-bullet-active {
+  background: #ba2d3b;
+  opacity: 1;
+}
+
+/* ===== HERO PROMO (slide 1) ===== */
+.hero-promo {
+  width: 100%;
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.hero-inner {
+  width: min(1200px, 92vw);
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.hero-copy {
+  color: #082032;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: #e63946;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 10px rgba(230, 57, 70, 0.15);
+  margin-bottom: 10px;
+}
+
+.hero-title {
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  line-height: 1.15;
+  margin: 4px 0 8px;
+  font-weight: 800;
+  color: #1d3557;
+}
+.hero-title strong {
+  color: #e63946;
+}
+
+.hero-sub {
+  color: #425466;
+  margin: 0 0 12px;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+}
+
+.hero-perks {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: #243b53;
+  font-size: 0.95rem;
+}
+
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 14px;
+}
+
+.chip {
+  border: 1px solid #e6edf5;
+  background: #fff;
+  color: #1d3557;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+}
+.chip:hover {
+  transform: translateY(-1px);
+  border-color: #e63946;
+  box-shadow: 0 6px 16px rgba(230, 57, 70, 0.15);
+}
+
+.hero-cta {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.btn-cta {
+  background: linear-gradient(135deg, #e63946, #ba2d3b);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 10px 20px rgba(230, 57, 70, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(230, 57, 70, 0.35);
+}
+
+.btn-ghost {
+  border: 1px solid #e6edf5;
+  background: #fff;
+  color: #1d3557;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+}
+.btn-ghost:hover {
+  transform: translateY(-1px);
+  border-color: #e63946;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.hero-legal {
+  font-size: 0.82rem;
+  color: #5b7083;
+  margin-top: 10px;
+}
+
+/* Lado derecho: imagen / contador */
+.hero-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+}
+
+.hero-img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.15));
+}
+
+/* “Contador” visual simple (placeholder) */
+.hero-countdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffffaa;
+  backdrop-filter: blur(4px);
+  border: 1px solid #e9eef5;
+  border-radius: 14px;
+  padding: 8px 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+.cd-label {
+  font-size: 0.8rem;
+  color: #1d3557;
+  font-weight: 700;
+  margin-right: 4px;
+}
+.cd-box {
+  display: grid;
+  place-items: center;
+  background: #1d3557;
+  color: #fff;
+  border-radius: 10px;
+  padding: 6px 8px;
+  min-width: 40px;
+}
+.cd-num {
+  font-weight: 800;
+  line-height: 1;
+}
+.cd-unit {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+.cd-col {
+  color: #1d3557;
+  font-weight: 800;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+  .hero-art {
+    order: -1; /* imagen arriba en mobile */
+  }
+  .hero-countdown {
+    margin-bottom: 10px;
+  }
+}
+
+/* ===== BANK / PAYMENT PROMO (slide 2) ===== */
+.bank-promo {
+  width: 100%;
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.bank-inner {
+  width: min(1200px, 92vw);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.bank-copy {
+  color: #082032;
+}
+
+.bank-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: #1d3557;
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 10px;
+}
+
+.bank-title {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.15;
+  margin: 4px 0 8px;
+  font-weight: 800;
+  color: #1d3557;
+}
+.bank-title strong {
+  color: #e63946;
+}
+
+.bank-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 12px;
+  display: grid;
+  gap: 6px;
+  color: #243b53;
+  font-size: 0.95rem;
+}
+
+.bank-cta {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.bank-legal {
+  font-size: 0.82rem;
+  color: #5b7083;
+  margin-top: 10px;
+}
+
+/* Logos con marquee infinito */
+.bank-logos-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.bank-logos {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  min-width: max-content;
+  animation: marquee 18s linear infinite;
+  will-change: transform;
+}
+
+.bank-logos img {
+  height: 36px;
+  width: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+  opacity: 0.95;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Tarjetas decorativas */
+.card-stack {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  gap: 8px;
+}
+.pay-card {
+  width: 58px;
+  height: 36px;
+  border-radius: 8px;
+  font-weight: 800;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+  transform: rotate(-6deg);
+}
+.pay-card.mc {
+  background: linear-gradient(135deg, #ff5f6d, #ffc371);
+  transform: rotate(4deg);
+}
+.pay-card.visa {
+  background: #1a1f71;
+}
+.pay-card.mp {
+  background: #00b1ea;
+  transform: rotate(-2deg);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .bank-inner {
+    grid-template-columns: 1fr;
+  }
+  .card-stack {
+    display: none;
+  }
+  .bank-logos img {
+    height: 28px;
+  }
+}
