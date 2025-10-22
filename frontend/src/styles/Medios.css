@@ -1,0 +1,78 @@
+/* src/styles/Medios.css */
+
+/* Bloque general */
+.medios {
+  margin-top: 40px;
+  background: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.medios > h2 {
+  font-size: 1.6rem;
+  color: #1d3557;
+  margin-bottom: 6px;
+}
+
+.medios-desc {
+  color: #54627a;
+  margin-bottom: 16px;
+}
+
+/* Grilla de logos */
+.medios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.medio-card {
+  background: #f9fbff;
+  border: 1px solid #e7eef7;
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.medio-card:hover {
+  transform: translateY(-3px);
+  border-color: #cfe0ff;
+  box-shadow: 0 8px 18px rgba(69, 123, 157, 0.15);
+}
+
+.medio-card img {
+  width: 92px;
+  height: 32px;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.06));
+}
+
+.medio-card span {
+  font-size: .95rem;
+  font-weight: 600;
+  color: #334e68;
+}
+
+/* Legales */
+.medios-legales {
+  margin-top: 14px;
+  font-size: .85rem;
+  color: #6b7a90;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .medios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

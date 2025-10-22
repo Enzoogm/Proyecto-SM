@@ -10,6 +10,8 @@ from supermercado.rutas.pagos import pagos_bp
 from supermercado.rutas.carrito import carrito_bp
 from supermercado.rutas.auth import auth_bp
 from supermercado.rutas.admin import admin_bp
+from supermercado.rutas.promos import promos_bp
+
 
 # Cargar .env
 load_dotenv()
@@ -25,6 +27,7 @@ app.register_blueprint(ventas_bp, url_prefix="/api/ventas")
 app.register_blueprint(pagos_bp, url_prefix="/api/pagos")
 app.register_blueprint(carrito_bp, url_prefix="/api/carrito")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
+app.register_blueprint(promos_bp, url_prefix="/api/promos")
 
 if __name__ == "__main__":
     app.run(debug=True)

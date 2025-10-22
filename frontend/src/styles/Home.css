@@ -1,3 +1,8 @@
+/* los destinos de scroll no quedan tapados por el header */
+.scroll-target {
+  scroll-margin-top: 90px; /* mismo alto que tu header */
+}
+
 /* ================================
    FUENTE Y RESET
 ================================ */
