@@ -1,9 +1,13 @@
+PYTHONPATH=. pytest
+
+
 python -m venv .venv
 source .venv/bin/activate
 pip install flask
 pip install mysql-connector-python
 pip install flask-cors
 pip install python-dotenv
+pip install pytest pytest-mock pytest-cov
 python -m supermercado.app
 
 npm init -y
