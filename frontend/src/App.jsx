@@ -13,6 +13,8 @@ import Registro from "./pages/Registro.jsx";
 import ProductosPorCategoria from "./pages/Productos_categoria.jsx";
 import Layout from "./components/Layout.jsx";
 import { useAuth } from "./components/AuthContext.jsx";
+import Terminos from "./pages/Terminos.jsx";
+import Privacidad from "./pages/Privacidad.jsx";
 
 // 👑 Importamos el Admin completo
 import Admin from "./pages/Admin.jsx";
@@ -118,6 +120,23 @@ function App() {
           )
         }
       />
+        <Route
+          path="/terminos"
+          element={
+            <Layout>
+              <Terminos />
+            </Layout>
+          }
+        />
+        <Route
+          path="/privacidad"
+          element={
+            <Layout>
+              <Privacidad />
+            </Layout>
+          }
+        />
+
     </Routes>
   );
 }

@@ -1,87 +1,145 @@
-/* Barra de navegación */
+/* ============================
+   HEADER MODERNO Y ELEGANTE
+   ============================ */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #e63946;
-  color: white;
-  padding: 15px 30px; /* Barra más ancha y espaciosa */
-  border-radius: 25px; /* Redondeamos los bordes */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  margin: 0 auto; /* Centramos el contenido */
+
+  background: linear-gradient(90deg, #e63946 0%, #d62828 50%, #ba181b 100%); /* 🔥 Degradado rojo premium */
+  color: #fff;
+
+  padding: 25px 60px; /* Más alto y espacioso */
+  border-radius: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  margin: 0;
+
+  transition: background 0.4s ease, box-shadow 0.3s ease;
 }
 
 /* Logo */
 .logo a {
-  color: white;
+  color: #fff;
   text-decoration: none;
-  font-size: 1.8rem; /* Un poco más grande */
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 0.3s ease;
+}
+
+.logo a:hover {
+  transform: scale(1.05);
 }
 
 /* Barra de búsqueda */
 .busqueda {
-  padding: 10px 20px;
-  border-radius: 25px; /* Redondeamos más la búsqueda */
+  padding: 14px 25px;
+  border-radius: 40px;
   border: none;
-  width: 350px; /* Barra más ancha */
+  width: 420px;
   outline: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  color: #333;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 }
 
-/* Estilo de las acciones del usuario */
+.busqueda:focus {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+  transform: scale(1.03);
+}
+
+/* Acciones del usuario */
 .acciones-usuario {
   display: flex;
   align-items: center;
-  gap: 20px; /* Más espacio entre los elementos */
+  gap: 35px;
 }
 
 /* Enlaces de carrito y login */
 .carrito-link,
 .login-link {
-  color: white;
+  color: #fff;
   text-decoration: none;
-  font-weight: bold;
-  font-size: 1.1rem; /* Un poco más grande para mejor visibilidad */
+  font-weight: 600;
+  font-size: 1.15rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.carrito-link::after,
+.login-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
+
+.carrito-link:hover::after,
+.login-link:hover::after {
+  width: 100%;
 }
 
 .carrito-link:hover,
 .login-link:hover {
-  text-decoration: underline;
-  color: #f1faee;
+  color: #f8f9fa;
 }
 
-/* Botón de logout */
+/* Botón logout */
 .btn-logout {
   background: #fff;
-  color: #e63946;
+  color: #d62828;
   border: none;
-  padding: 8px 20px;
-  border-radius: 25px; /* Botón más redondeado */
+  padding: 10px 25px;
+  border-radius: 30px;
   cursor: pointer;
   font-weight: bold;
-  margin-left: 20px; /* Para que no se "corte" con el borde */
   transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn-logout:hover {
-  background: #e63946;
+  background: transparent;
   color: #fff;
-  transform: scale(1.05);
+  border: 2px solid #fff;
+  transform: scale(1.08);
 }
 
-/* Ajustes para móviles */
+/* Efecto sutil al hacer scroll */
+.header.scrolled {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(90deg, #d62828 0%, #ba181b 50%, #9d0208 100%);
+  padding: 18px 50px; /* 🔥 un poco más chico cuando se baja */
+  transition: all 0.4s ease;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .header {
-    padding: 12px 20px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 15px;
   }
 
   .busqueda {
-    width: 250px; /* Menos ancho en dispositivos pequeños */
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .acciones-usuario {
+    justify-content: center;
+    gap: 20px;
   }
 }

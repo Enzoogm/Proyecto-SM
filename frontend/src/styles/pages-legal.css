@@ -1,0 +1,91 @@
+/* src/styles/pages-legal.css */
+/* ===== Paleta base ===== */
+:root{
+  --brand-red-1:#e63946;
+  --brand-red-2:#d62828;
+  --ink:#111;
+  --muted:#6b6b6b;
+  --card:#ffffff;
+  --border:#e9e9e9;
+}
+
+/* Todo lo de legales vive bajo .legal-page */
+.legal-page.page-container{
+  max-width: 1000px;
+  margin: 120px auto 64px;   /* header fixed */
+  padding: 0 20px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+/* Títulos y subtítulos */
+.legal-page h1{
+  margin: 0 0 10px;
+  color: var(--brand-red-2);
+  font-size: 2rem;
+  letter-spacing: .3px;
+}
+.legal-page .meta{
+  color: var(--muted);
+  font-size: .95rem;
+  margin-bottom: 16px;
+}
+
+/* Secciones como “cards” limpias */
+.legal-page section{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.06);
+  margin-bottom: 16px;
+}
+
+/* Subtítulos dentro de secciones */
+.legal-page h2{
+  margin: 4px 0 10px;
+  color: var(--brand-red-2);
+  font-size: 1.25rem;
+}
+.legal-page h3{
+  margin: 10px 0 6px;
+  color: var(--brand-red-1);
+  font-size: 1.06rem;
+}
+
+/* Texto y listas */
+.legal-page p,
+.legal-page li{ color:#222; }
+
+.legal-page ul{
+  padding-left: 20px;
+  margin: 8px 0 14px;
+}
+.legal-page li + li{ margin-top: 6px; }
+
+/* Enlaces */
+.legal-page a{
+  color: var(--brand-red-2);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color .2s ease, color .2s ease;
+}
+.legal-page a:hover{
+  color: var(--brand-red-1);
+  border-color: var(--brand-red-2);
+}
+
+/* Botones/links de acción al final */
+.legal-page .page-footer-actions{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px){
+  .legal-page.page-container{
+    margin: 110px auto 48px;
+  }
+}
