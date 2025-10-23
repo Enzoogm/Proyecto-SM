@@ -7,8 +7,12 @@ pip install flask
 pip install mysql-connector-python
 pip install flask-cors
 pip install python-dotenv
+pip install Flask python-dotenv PyJWT Werkzeug
 pip install pytest pytest-mock pytest-cov
 python -m supermercado.app
+
+
+
 
 npm init -y
 
