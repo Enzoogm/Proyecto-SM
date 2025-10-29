@@ -1,9 +1,25 @@
 # supermercado/rutas/__init__.py
+"""
+Inicializa todos los módulos de rutas (blueprints) del proyecto.
+Esto asegura que Flask cargue los endpoints antes de registrar los blueprints en app.py.
+"""
 
-# Exponer submódulos como atributos del paquete
-from . import categorias as categorias
-from . import productos as productos
+from . import categorias
+from . import productos
+from . import carrito
+from . import ventas
+from . import pagos
+from . import auth
+from . import admin
+from . import promos
 
-# (opcional) exportar blueprints si querés importarlos desde acá
-from .categorias import categorias_bp  # noqa: F401
-from .productos import productos_bp    # noqa: F401
+__all__ = [
+    "categorias",
+    "productos",
+    "carrito",
+    "ventas",
+    "pagos",
+    "auth",
+    "admin",
+    "promos",
+]

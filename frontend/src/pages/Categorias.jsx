@@ -1,30 +1,28 @@
-import React, { useEffect, useState } from "react";
+// src/pages/Categorias.jsx
 import { Link } from "react-router-dom";
 
-export function Categorias() {
-  const [categorias, setCategorias] = useState([]);
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/categorias") // Cambia la ruta si tu API es diferente
-      .then((res) => res.json())
-      .then((data) => setCategorias(data))
-      .catch((err) => console.error(err));
-  }, []);
-
+export default function Categorias({ categorias = [] }) {
   return (
     <div className="container my-4">
       <h1 className="mb-3">Categorías</h1>
-      <ul className="list-group">
-        {categorias.map(({ id_categoria, nombre_cat }) => (
-          <li key={id_categoria} className="list-group-item">
-            <Link to={`/productos/categorias/${id_categoria}`}>
-              {nombre_cat}
-            </Link>
-          </li>
-        ))}
-      </ul>
+
+      {categorias.length === 0 ? (
+        <div className="alert alert-warning">No hay categorías para mostrar.</div>
+      ) : (
+        <ul className="list-group">
+          {categorias.map((c) => {
+            const id = c.id_categoria ?? c.id ?? "";
+            const name = c.nombre_cat ?? c.nombre ?? c.name ?? "(sin nombre)";
+            return (
+              <li key={id} className="list-group-item">
+                <Link to={`/categorias/${id}`} className="text-decoration-none">
+                  {name}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
-
-export default Categorias;

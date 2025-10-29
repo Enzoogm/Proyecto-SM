@@ -25,8 +25,7 @@ function App() {
   const { usuario, logout } = useAuth();
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:5000/api/productos/all")
+    axios.get("http://127.0.0.1:5000/api/productos")
       .then((res) => setProductos(res.data))
       .catch((err) => console.error("Error cargando productos:", err));
 

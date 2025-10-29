@@ -1,105 +1,76 @@
-import React, { useState, useEffect } from "react";
+// src/pages/Productos_categoria.jsx
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useCart } from "../components/CartContext.jsx";
-import "../styles/ProductosCategoria.css";
 
-function ProductosPorCategoria() {
+export default function ProductosPorCategoria() {
   const { id } = useParams();
-  const [productos, setProductos] = useState([]);
-  const [categoria, setCategoria] = useState("");
-  const [cantidades, setCantidades] = useState({});
-  const { agregarAlCarrito } = useCart();
+  const [payload, setPayload] = useState({ categoria: "", productos: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/api/productos/categoria/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCategoria(data.categoria);
-        setProductos(data.productos);
-        const inicial = data.productos.reduce((acc, p) => {
-          acc[p.id_producto] = 1;
-          return acc;
-        }, {});
-        setCantidades(inicial);
+    setLoading(true);
+    setError("");
+    fetch(`${API}/api/productos/categoria/${id}`, { credentials: "include" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
       })
-      .catch((err) => {
-        console.error("Error cargando productos por categoría:", err);
-        setCategoria("Categoría no encontrada");
-        setProductos([]);
-      });
-  }, [id]);
+      .then(setPayload)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [API, id]);
 
-  const manejarCambioCantidad = (id_producto, valor) => {
-    setCantidades({
-      ...cantidades,
-      [id_producto]: Math.max(1, parseInt(valor) || 1),
-    });
-  };
+  if (loading) return <div className="container my-4">Cargando…</div>;
+  if (error) return <div className="container my-4 text-danger">Error: {error}</div>;
 
-  const handleAgregar = (producto) => {
-    const cantidad = cantidades[producto.id_producto] || 1;
-    agregarAlCarrito(
-      {
-        id: producto.id_producto,
-        nombre: producto.nombre_prod,
-        descripcion: producto.descripcion,
-        precio: producto.precio,
-        stock: producto.stock,
-      },
-      cantidad
-    );
-  };
+  const { categoria, productos } = payload;
 
   return (
-    <div className="categoria-container">
-      <h2>Productos de {categoria}</h2>
+    <div className="container my-4">
+      <div className="d-flex align-items-center gap-3 mb-3">
+        <h1 className="mb-0">Productos</h1>
+        <span className="badge bg-secondary">Categoría: {categoria || id}</span>
+      </div>
 
-      {productos.length === 0 ? (
-        <p>No hay productos en esta categoría.</p>
+      {(!productos || productos.length === 0) ? (
+        <div className="alert alert-warning">No hay productos en esta categoría.</div>
       ) : (
-        <div className="grid">
+        <div className="row g-3">
           {productos.map((p) => (
-            <div key={p.id_producto} className="card">
-              <img
-                src={p.imagen_url}
-                alt={p.nombre_prod}
-                className="producto-img"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/static/img/no-image.png";
-                }}
-              />
-              <h3>{p.nombre_prod}</h3>
-              <p>{p.descripcion}</p>
-              <p>
-                <strong>${p.precio}</strong>
-              </p>
-              <p>{p.stock > 0 ? `Stock: ${p.stock}` : "Agotado"}</p>
-              <input
-                type="number"
-                min="1"
-                value={cantidades[p.id_producto] || 1}
-                onChange={(e) =>
-                  manejarCambioCantidad(p.id_producto, e.target.value)
-                }
-              />
-              <button
-                onClick={() => handleAgregar(p)}
-                disabled={p.stock === 0}
-                className="btn-agregar"
-              >
-                {p.stock > 0 ? "Agregar al carrito" : "Agotado"}
-              </button>
+            <div key={p.id_producto} className="col-12 col-sm-6 col-md-4 col-lg-3">
+              <div className="card h-100">
+                {p.imagen_url && (
+                  <img
+                    src={p.imagen_url}
+                    alt={p.nombre_prod}
+                    className="card-img-top"
+                    style={{ objectFit: "cover", height: 160 }}
+                  />
+                )}
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{p.nombre_prod}</h5>
+                  <p className="card-text flex-grow-1">{p.descripcion || "—"}</p>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="fw-bold">${p.precio}</span>
+                    <span className={`badge ${p.stock > 0 ? "bg-success" : "bg-danger"}`}>
+                      {p.stock > 0 ? `Stock: ${p.stock}` : "Sin stock"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      <Link to="/" className="btn-volver">
-        ⬅ Volver al Home
-      </Link>
+      <div className="mt-4">
+        <Link to="/categorias" className="btn btn-outline-secondary">
+          ← Volver a categorías
+        </Link>
+      </div>
     </div>
   );
 }
-
-export default ProductosPorCategoria;

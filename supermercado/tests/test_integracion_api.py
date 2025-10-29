@@ -1,5 +1,21 @@
 import pytest
 
+# --- Skip integración si la DB no está accesible ---
+from supermercado.db import conectar
+
+def _db_available() -> bool:
+    try:
+        cn = conectar()
+        cn.close()
+        return True
+    except Exception:
+        return False
+
+pytestmark = pytest.mark.skipif(
+    not _db_available(),
+    reason="DB no accesible: se saltan tests de integración."
+)
+
 # ---------- FIXTURES ----------
 @pytest.fixture(scope="session")
 def app_instance():
