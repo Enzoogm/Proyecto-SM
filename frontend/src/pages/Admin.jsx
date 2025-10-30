@@ -33,23 +33,23 @@ export default function Admin() {
   useEffect(() => {
     if (usuario?.rol !== "admin") return;
 
-    fetch("http://127.0.0.1:5000/api/admin/stats")
+    fetch(`/api/admin/stats`)
       .then((res) => res.json())
       .then(setStats);
 
-    fetch("http://127.0.0.1:5000/api/admin/productos")
+    fetch(`/api/admin/productos`)
       .then((res) => res.json())
       .then(setProductos);
 
-    fetch("http://127.0.0.1:5000/api/admin/ventas")
+    fetch(`/api/admin/ventas`)
       .then((res) => res.json())
       .then(setVentas);
 
-    fetch("http://127.0.0.1:5000/api/admin/categorias")
+    fetch(`/api/admin/categorias`)
       .then((res) => res.json())
       .then(setCategorias);
 
-    fetch("http://127.0.0.1:5000/api/admin/usuarios")
+    fetch(`/api/admin/usuarios`)
       .then((res) => res.json())
       .then(setUsuarios);
   }, [usuario]);
@@ -62,7 +62,7 @@ export default function Admin() {
   // Productos
   // ------------------------
   const handleCrearProducto = () => {
-    fetch("http://127.0.0.1:5000/api/admin/productos", {
+    fetch(`/api/admin/productos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevoProducto),
@@ -81,7 +81,7 @@ export default function Admin() {
   };
 
   const handleActualizarStock = (id, nuevoStock) => {
-    fetch(`http://127.0.0.1:5000/api/admin/productos/${id}/stock`, {
+    fetch(`/api/admin/productos/${id}/stock`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ stock: nuevoStock }),
@@ -89,7 +89,7 @@ export default function Admin() {
   };
 
   const handleEliminarProducto = (id) => {
-    fetch(`http://127.0.0.1:5000/api/admin/productos/${id}`, {
+    fetch(`/api/admin/productos/${id}`, {
       method: "DELETE",
     }).then(() => setVista("productos"));
   };
@@ -98,7 +98,7 @@ export default function Admin() {
   // Categorías
   // ------------------------
   const handleCrearCategoria = () => {
-    fetch("http://127.0.0.1:5000/api/admin/categorias", {
+    fetch(`/api/admin/categorias`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre: nuevaCategoria }),
@@ -111,7 +111,7 @@ export default function Admin() {
   };
 
   const handleEliminarCategoria = (id) => {
-    fetch(`http://127.0.0.1:5000/api/admin/categorias/${id}`, {
+    fetch(`/api/admin/categorias/${id}`, {
       method: "DELETE",
     }).then(() => setVista("categorias"));
   };

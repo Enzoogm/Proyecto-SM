@@ -8,12 +8,10 @@ export default function ProductosPorCategoria() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
-
   useEffect(() => {
     setLoading(true);
     setError("");
-    fetch(`${API}/api/productos/categoria/${id}`, { credentials: "include" })
+    fetch(`/api/productos/categoria/${id}`, { credentials: "include" })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -24,7 +22,8 @@ export default function ProductosPorCategoria() {
   }, [API, id]);
 
   if (loading) return <div className="container my-4">Cargando…</div>;
-  if (error) return <div className="container my-4 text-danger">Error: {error}</div>;
+  if (error)
+    return <div className="container my-4 text-danger">Error: {error}</div>;
 
   const { categoria, productos } = payload;
 
@@ -35,12 +34,17 @@ export default function ProductosPorCategoria() {
         <span className="badge bg-secondary">Categoría: {categoria || id}</span>
       </div>
 
-      {(!productos || productos.length === 0) ? (
-        <div className="alert alert-warning">No hay productos en esta categoría.</div>
+      {!productos || productos.length === 0 ? (
+        <div className="alert alert-warning">
+          No hay productos en esta categoría.
+        </div>
       ) : (
         <div className="row g-3">
           {productos.map((p) => (
-            <div key={p.id_producto} className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div
+              key={p.id_producto}
+              className="col-12 col-sm-6 col-md-4 col-lg-3"
+            >
               <div className="card h-100">
                 {p.imagen_url && (
                   <img
@@ -52,10 +56,16 @@ export default function ProductosPorCategoria() {
                 )}
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">{p.nombre_prod}</h5>
-                  <p className="card-text flex-grow-1">{p.descripcion || "—"}</p>
+                  <p className="card-text flex-grow-1">
+                    {p.descripcion || "—"}
+                  </p>
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="fw-bold">${p.precio}</span>
-                    <span className={`badge ${p.stock > 0 ? "bg-success" : "bg-danger"}`}>
+                    <span
+                      className={`badge ${
+                        p.stock > 0 ? "bg-success" : "bg-danger"
+                      }`}
+                    >
                       {p.stock > 0 ? `Stock: ${p.stock}` : "Sin stock"}
                     </span>
                   </div>

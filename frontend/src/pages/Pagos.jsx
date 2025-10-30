@@ -32,7 +32,7 @@ export default function Pagos() {
   );
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/pagos/cupones")
+  fetch(`/api/pagos/cupones`)
       .then((res) => res.json())
       .then((data) => setCuponesDisponibles(data))
       .catch((err) => console.error("Error cargando cupones:", err));
@@ -97,7 +97,7 @@ export default function Pagos() {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/pagos/crear", {
+  const res = await fetch(`/api/pagos/crear`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
       const token = getToken();
       const headers = {};
       if (token) headers["Authorization"] = `Bearer ${token}`;
-      const res = await fetch("/api/auth/me", {
+      const res = await fetch(`/api/auth/me`, {
         method: "GET",
         credentials: "include", // keep cookie support; Authorization preferred
         headers,
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
   }
 
   async function login(email, password) {
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch(`/api/auth/login`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
   }
 
   async function registro(nombre, email, password) {
-    const res = await fetch("/api/auth/registro", {
+    const res = await fetch(`/api/auth/registro`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
-    await fetch("/api/auth/logout", {
+    await fetch(`/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -88,7 +88,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ usuario, cargando, login, registro, logout }}
+      value={{ usuario, cargando, login, registro, logout, debugCookie }}
     >
       {children}
     </AuthContext.Provider>

@@ -26,12 +26,12 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("/api/productos")
+      .get(`/api/productos`)
       .then((res) => setProductos(res.data))
       .catch((err) => console.error("Error cargando productos:", err));
 
     axios
-      .get("/api/categorias")
+      .get(`/api/categorias`)
       .then((res) => setCategorias(res.data))
       .catch((err) => console.error("Error cargando categorías:", err));
   }, []);
@@ -73,15 +73,7 @@ function App() {
         }
       />
       <Route
-        path="/categorias"
-        element={
-          <Layout>
-            <Categorias categorias={categorias} />
-          </Layout>
-        }
-      />
-      <Route
-        path="/categorias/:id"
+        path="/productos/categoria/:id"
         element={
           <Layout>
             <ProductosPorCategoria />

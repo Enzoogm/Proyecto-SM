@@ -1,5 +1,5 @@
 # supermercado/app.py
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
@@ -39,6 +39,21 @@ def create_app():
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
 
+    # Also set explicit CORS response headers for allowed origins so that when
+    # supports_credentials=True we return a single Access-Control-Allow-Origin
+    # equal to the caller Origin (browsers require a single origin when credentials are used).
+    allowed_origins = set(origins)
+
+    @app.after_request
+    def _cors_after_request(response):
+        origin = request.headers.get("Origin")
+        if origin and origin in allowed_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+            response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
+        return response
+
     # Aceptar /ruta y /ruta/
     app.url_map.strict_slashes = False
 
@@ -59,4 +74,5 @@ app = create_app()
 
 if __name__ == "__main__":
     # En dev podés dejar debug=True
-    app.run(debug=True)
+    # Bind to 0.0.0.0 para que sea accesible desde la red del colegio (10.9.120.5)
+    app.run(host="0.0.0.0", debug=True)

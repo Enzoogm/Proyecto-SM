@@ -2,101 +2,68 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Productos.css";
 
-function Productos({ onAgregarAlCarrito }) {
+function Productos() {
   const [productos, setProductos] = useState([]);
-  const [cantidades, setCantidades] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/productos")
-      .then((res) => res.json())
-      .then((data) => {
-        setProductos(data);
-        const iniciales = data.reduce((acc, p) => {
-          acc[p.id_producto] = 1;
-          return acc;
-        }, {});
-        setCantidades(iniciales);
+    setLoading(true);
+    setError("");
+    fetch(`/api/productos`, { credentials: "include" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
       })
-      .catch((err) => console.error(err));
+      .then((data) => setProductos(data || []))
+      .catch((err) => setError(err.message || "Error cargando productos"))
+      .finally(() => setLoading(false));
   }, []);
 
-  const handleCantidadChange = (id_producto, value, max) => {
-    const cantidad = Math.min(Math.max(Number(value), 1), max);
-    setCantidades((prev) => ({ ...prev, [id_producto]: cantidad }));
-  };
-
-  const handleAgregar = (e, id_producto) => {
-    e.preventDefault();
-    if (onAgregarAlCarrito) {
-      onAgregarAlCarrito(id_producto, cantidades[id_producto] || 1);
-    }
-  };
+  if (loading) return <div className="container my-4">Cargando productos…</div>;
+  if (error)
+    return <div className="container my-4 text-danger">Error: {error}</div>;
+  if (!productos || productos.length === 0)
+    return (
+      <div className="container my-4 alert alert-warning">
+        No hay productos para mostrar.
+      </div>
+    );
 
   return (
-    <div className="productos-container">
-      <h1 className="productos-titulo">Todos los Productos</h1>
-
-      <div className="productos-grid">
+    <div className="productos-grid container my-4">
+      <div className="row g-3">
         {productos.map((p) => (
-          <div className="producto-card" key={p.id_producto}>
-            <img
-              src={p.imagen_url}
-              alt={p.nombre_prod}
-              className="producto-img"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/static/img/no-image.png";
-              }}
-            />
-            <div className="producto-body">
-              <h5>{p.nombre_prod}</h5>
-              <p>
-                <strong>${p.precio}</strong>
-              </p>
-              <p>
-                {p.stock > 0 ? (
-                  <span className="stock-ok">En stock: {p.stock}</span>
-                ) : (
-                  <span className="stock-no">Agotado</span>
-                )}
-              </p>
-            </div>
-            <div className="producto-footer">
-              <form
-                onSubmit={(e) => handleAgregar(e, p.id_producto)}
-                className="form-agregar"
-              >
-                <input
-                  type="number"
-                  value={cantidades[p.id_producto]}
-                  min="1"
-                  max={p.stock}
-                  className="input-cantidad"
-                  onChange={(e) =>
-                    handleCantidadChange(p.id_producto, e.target.value, p.stock)
-                  }
-                  disabled={p.stock === 0}
+          <div
+            key={p.id_producto}
+            className="col-12 col-sm-6 col-md-4 col-lg-3"
+          >
+            <div className="card h-100">
+              {p.imagen_url && (
+                <img
+                  src={p.imagen_url}
+                  alt={p.nombre_prod}
+                  className="card-img-top"
+                  style={{ height: 160, objectFit: "cover" }}
                 />
-                <button
-                  type="submit"
-                  className="btn-agregar"
-                  disabled={p.stock === 0}
-                >
-                  Agregar
-                </button>
-              </form>
+              )}
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title">{p.nombre_prod}</h5>
+                <p className="card-text flex-grow-1">{p.descripcion || "—"}</p>
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="fw-bold">${p.precio}</span>
+                  <span
+                    className={`badge ${
+                      p.stock > 0 ? "bg-success" : "bg-danger"
+                    }`}
+                  >
+                    {p.stock > 0 ? `Stock: ${p.stock}` : "Sin stock"}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="productos-acciones">
-        <Link to="/carrito" className="btn-ver-carrito">
-          Ver carrito
-        </Link>
-        <Link to="/" className="btn-volver">
-          Volver
-        </Link>
       </div>
     </div>
   );
