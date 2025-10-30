@@ -20,14 +20,20 @@ def create_app():
 
     # Secret para sesiones / JWT fallback
     app.secret_key = os.getenv("SECRET_KEY") or "dev-secret-for-tests"
+    # Also expose a dedicated JWT secret name so other modules (auth) can use the same value
+    app.config["SECRET_KEY_SUPER"] = os.getenv("SECRET_KEY_SUPER") or app.secret_key
 
     # ====== CORS con credenciales (cookies httpOnly) ======
-    # Configurable por .env -> FRONTEND_ORIGIN=http://localhost:5173
-    FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
+    # Aceptamos localhost, 127.0.0.1 y la red del colegio
+    origins = [
+        os.getenv("FRONTEND_ORIGIN", "http://localhost:5173"),
+        "http://127.0.0.1:5173",
+        "http://10.9.120.5:5173",
+    ]
     CORS(
         app,
         supports_credentials=True,                   # necesario para enviar cookies
-        resources={r"/api/*": {"origins": FRONTEND_ORIGIN}},
+        resources={r"/api/*": {"origins": origins}},
         expose_headers=["Content-Type"],
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],

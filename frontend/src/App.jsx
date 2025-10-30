@@ -25,12 +25,13 @@ function App() {
   const { usuario, logout } = useAuth();
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/productos")
+    axios
+      .get("/api/productos")
       .then((res) => setProductos(res.data))
       .catch((err) => console.error("Error cargando productos:", err));
 
     axios
-      .get("http://127.0.0.1:5000/api/categorias")
+      .get("/api/categorias")
       .then((res) => setCategorias(res.data))
       .catch((err) => console.error("Error cargando categorías:", err));
   }, []);
@@ -110,7 +111,7 @@ function App() {
       <Route
         path="/admin"
         element={
-          usuario?.rol === "admin" ? (
+          usuario?.canAccessAdmin ? (
             <Layout>
               <Admin />
             </Layout>
@@ -119,23 +120,22 @@ function App() {
           )
         }
       />
-        <Route
-          path="/terminos"
-          element={
-            <Layout>
-              <Terminos />
-            </Layout>
-          }
-        />
-        <Route
-          path="/privacidad"
-          element={
-            <Layout>
-              <Privacidad />
-            </Layout>
-          }
-        />
-
+      <Route
+        path="/terminos"
+        element={
+          <Layout>
+            <Terminos />
+          </Layout>
+        }
+      />
+      <Route
+        path="/privacidad"
+        element={
+          <Layout>
+            <Privacidad />
+          </Layout>
+        }
+      />
     </Routes>
   );
 }

@@ -14,14 +14,21 @@ auth_bp = Blueprint("auth", __name__)
 
 # --- Config JWT
 def _secret():
-    # usa SECRET_KEY de Flask si no hay var dedicada
-    return os.getenv("SECRET_KEY_SUPER") or current_app.config.get("SECRET_KEY") or "dev-secret"
+    # Use a single stable secret. Prefer env var SECRET_KEY_SUPER, then Flask config SECRET_KEY_SUPER,
+    # then app SECRET_KEY, then a dev fallback. This ensures encode/decode use the same value across processes.
+    return (
+        os.getenv("SECRET_KEY_SUPER")
+        or current_app.config.get("SECRET_KEY_SUPER")
+        or current_app.config.get("SECRET_KEY")
+        or "dev-secret"
+    )
 
 JWT_EXP_SECONDS = int(os.getenv("JWT_EXP_SECONDS", "3600"))  # 1 hora
 
 def _gen_token(user_id: int) -> str:
     payload = {
-        "sub": int(user_id),
+        # JWT "sub" (subject) is typically a string; encode as string to avoid library validation errors
+        "sub": str(int(user_id)),
         "iat": dt.datetime.utcnow(),
         "exp": dt.datetime.utcnow() + dt.timedelta(seconds=JWT_EXP_SECONDS),
     }
@@ -33,12 +40,13 @@ def _gen_token(user_id: int) -> str:
 def require_jwt(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        token = request.cookies.get("access_token")
+        # Prefer Authorization header (explicit) over cookie. If not present, fall back to cookie.
+        token = None
+        auth = request.headers.get("Authorization", "")
+        if auth.startswith("Bearer "):
+            token = auth.split(" ", 1)[1]
         if not token:
-            # fallback header Authorization: Bearer xxx (opcional)
-            auth = request.headers.get("Authorization", "")
-            if auth.startswith("Bearer "):
-                token = auth.split(" ", 1)[1]
+            token = request.cookies.get("access_token")
         if not token:
             return jsonify({"error": "token requerido"}), 401
         try:
@@ -51,9 +59,7 @@ def require_jwt(fn):
         return fn(*args, **kwargs)
     return wrapper
 
-# -------------------
-# REGISTRO (crea usuario y loguea con cookie httpOnly)
-# -------------------
+
 @auth_bp.post("/registro")
 def registro():
     data = request.get_json() or {}
@@ -72,7 +78,6 @@ def registro():
             return jsonify({"error": "Email ya registrado"}), 409
 
         hashed = generate_password_hash(password)
-        # siempre rol 'cliente' al registrarse
         cur.execute("""
             INSERT INTO Usuarios (nombre, email, password, rol)
             VALUES (%s, %s, %s, %s)
@@ -81,14 +86,15 @@ def registro():
         user_id = cur.lastrowid
 
         token = _gen_token(user_id)
-        resp = make_response(jsonify({"ok": True}))
+        resp = make_response(jsonify({"ok": True, "token": token}))  # <-- incluye token
         resp.set_cookie(
             "access_token",
             token,
             httponly=True,
             samesite="Lax",
-            secure=False,  # en prod => True (HTTPS)
+            secure=False,
             max_age=JWT_EXP_SECONDS,
+            path="/",
         )
         return resp, 201
     except Exception as e:
@@ -98,9 +104,7 @@ def registro():
         cur.close()
         db.close()
 
-# -------------------
-# LOGIN (setea cookie httpOnly)
-# -------------------
+
 @auth_bp.post("/login")
 def login():
     data = request.get_json() or {}
@@ -123,16 +127,18 @@ def login():
         return jsonify({"error": "Email o contraseña incorrectos"}), 401
 
     token = _gen_token(int(u["id_usuario"]))
-    resp = make_response(jsonify({"ok": True}))
+    resp = make_response(jsonify({"ok": True, "token": token}))  # <-- incluye token
     resp.set_cookie(
         "access_token",
         token,
         httponly=True,
         samesite="Lax",
-        secure=False,  # prod => True
+        secure=False,
         max_age=JWT_EXP_SECONDS,
+        path="/",
     )
     return resp, 200
+
 
 # -------------------
 # ME (devuelve lo mínimo, sin filtrar info sensible)
@@ -149,14 +155,11 @@ def me():
         if not u:
             return jsonify({"error": "usuario no encontrado"}), 404
 
-        # Si querés NO exponer nombre/rol, devolvé solo flags/permiso:
-        # return jsonify({"id": u["id_usuario"], "canAccessAdmin": u["rol"] == "admin"}), 200
-
         # Versión mixta: id + permiso (sin email)
         return jsonify({
             "id": u["id_usuario"],
-            "nombre": u["nombre"],                # quitalo si NO lo querés en el cliente
-            "canAccessAdmin": u["rol"] == "admin" # flag en vez de 'rol'
+            "nombre": u["nombre"],
+            "canAccessAdmin": u["rol"] == "admin"
         }), 200
     finally:
         cur.close()
@@ -168,5 +171,13 @@ def me():
 @auth_bp.post("/logout")
 def logout():
     resp = make_response(jsonify({"ok": True}))
-    resp.set_cookie("access_token", "", expires=0)
+    resp.set_cookie("access_token", "", expires=0, path="/")  # <- path agregado
     return resp, 200
+
+# supermercado/rutas/auth.py (abajo)
+@auth_bp.get("/_debug_cookie")
+def _debug_cookie():
+    return jsonify({
+        "cookies": list(request.cookies.keys()),
+        "has_access_token": "access_token" in request.cookies
+    }), 200

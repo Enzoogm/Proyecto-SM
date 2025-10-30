@@ -23,4 +23,5 @@ npm install axios
 npm install bootstrap
 npm install react-router-dom
 npm install swiper
+npm i -D @vitejs/plugin-react
 npm run dev
