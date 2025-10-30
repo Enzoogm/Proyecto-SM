@@ -19,7 +19,7 @@ export default function ProductosPorCategoria() {
       .then(setPayload)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [API, id]);
+  }, [id]);
 
   if (loading) return <div className="container my-4">Cargando…</div>;
   if (error)

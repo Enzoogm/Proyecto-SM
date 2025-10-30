@@ -6,7 +6,7 @@ function Ventas() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/ventas')
+  fetch('/api/ventas')
       .then(res => res.json())
       .then(data => {
         if (data.error) {
