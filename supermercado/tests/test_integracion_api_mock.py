@@ -1,6 +1,49 @@
-import pytest
+def test_obtener_categorias_normaliza_tuplas(mocker):
+    """
+    Test aislado sin DB — parchea conectar() para devolver filas y valida que obtener_categorias() normaliza correctamente.
+    """
+    from supermercado.rutas.categorias import obtener_categorias
+    class FakeCursor:
+        def execute(self, sql, params=None): pass
+        def fetchall(self):
+            return [
+                (1, "Bebidas"),
+                (2, "Snacks"),
+            ]
+        def close(self): pass
+    class FakeConn:
+        def cursor(self): return FakeCursor()
+        def close(self): pass
+    mocker.patch("supermercado.rutas.categorias.conectar", return_value=FakeConn())
+    result = obtener_categorias()
+    assert result == [
+        {"id": 1, "nombre": "Bebidas", "id_categoria": 1, "nombre_cat": "Bebidas"},
+        {"id": 2, "nombre": "Snacks", "id_categoria": 2, "nombre_cat": "Snacks"},
+    ], "La función debe normalizar correctamente las filas de la DB"
 
-# Usa las fixtures de tu conftest: app_instance y client
+def test_obtener_categorias_salta_invalidas(mocker):
+    """
+    Test aislado sin DB — parchea conectar() para devolver filas con id None y valida que obtener_categorias() ignora las inválidas.
+    """
+    from supermercado.rutas.categorias import obtener_categorias
+    class FakeCursor:
+        def execute(self, sql, params=None): pass
+        def fetchall(self):
+            return [
+                (None, "Sin id"),
+                (0, "Cero"),
+                (3, "Válida"),
+            ]
+        def close(self): pass
+    class FakeConn:
+        def cursor(self): return FakeCursor()
+        def close(self): pass
+    mocker.patch("supermercado.rutas.categorias.conectar", return_value=FakeConn())
+    result = obtener_categorias()
+    assert result == [
+        {"id": 3, "nombre": "Válida", "id_categoria": 3, "nombre_cat": "Válida"},
+    ], "La función debe ignorar filas con id None o <= 0"
+import pytest
 
 # ---------- CATEGORÍAS (mock) ----------
 def test_categorias_listado_mock(client, mocker):

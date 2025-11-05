@@ -6,7 +6,7 @@ categorias_bp = Blueprint("categorias", __name__)
 
 def obtener_categorias():
     """
-    Devuelve lista de dicts: normalizada a {"id": int, "nombre": str}
+    Devuelve lista de dicts: normalizada a {"id": int, "nombre": str, "id_categoria": int, "nombre_cat": str}
     """
     conn = conectar()
     cur = conn.cursor()
@@ -14,11 +14,11 @@ def obtener_categorias():
     rows = cur.fetchall()
     cur.close()
     conn.close()
-    # Normalizamos las claves para que el frontend reciba siempre {id, nombre}
-    # y además mantenemos las claves antiguas {id_categoria, nombre_cat} para
-    # compatibilidad con tests o clientes que aún lo esperan.
     result = []
     for r in rows:
+        # Salta filas inválidas (id None o <= 0)
+        if r[0] is None or r[0] <= 0:
+            continue
         item = {
             "id": r[0],
             "nombre": r[1],
@@ -27,6 +27,24 @@ def obtener_categorias():
         }
         result.append(item)
     return result
+def obtener_categoria_por_id(id):
+    """
+    Devuelve una categoría por id, normalizada, o None si no existe.
+    """
+    conn = conectar()
+    cur = conn.cursor()
+    cur.execute("SELECT id_categoria, nombre_cat FROM Categorias WHERE id_categoria = %s", (id,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    if not row or row[0] is None or row[0] <= 0:
+        return None
+    return {
+        "id": row[0],
+        "nombre": row[1],
+        "id_categoria": row[0],
+        "nombre_cat": row[1],
+    }
 
 
 @categorias_bp.get("/categorias")
@@ -65,3 +83,22 @@ def listar_categorias():
     except Exception as e:
         # En caso de error devolvemos 500 con lista vacía para que el frontend pueda manejarlo
         return jsonify({"error": "No se pudieron obtener las categorías."}), 500
+
+# Nuevo endpoint: obtener categoría por id
+@categorias_bp.get("/categorias/<int:id>")
+def obtener_categoria(id):
+    """
+    GET /api/categorias/<id>
+    Devuelve una categoría por id, normalizada, o error si no existe o id inválido.
+    """
+    try:
+        # Validación mínima: id debe ser > 0
+        if id is None or id <= 0:
+            return jsonify({"error": "Parámetros inválidos."}), 400
+        cat = obtener_categoria_por_id(id)
+        if cat is None:
+            return jsonify({"error": "No existe la categoría."}), 404
+        return jsonify(cat), 200
+    except Exception as e:
+        # Error inesperado
+        return jsonify({"error": "No se pudo obtener la categoría."}), 500
