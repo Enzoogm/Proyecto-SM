@@ -18,7 +18,6 @@ python -m supermercado.app
 # Inicializar front-end
 
 npm install
-
 npm install axios
 npm install bootstrap
 npm install react-router-dom

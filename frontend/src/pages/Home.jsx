@@ -38,9 +38,20 @@ function Home({ busqueda, setBusqueda }) {
 
   useEffect(() => {
     fetch(`/api/categorias`)
-      .then((res) => res.json())
-      .then((data) => setCategorias(data))
-      .catch(() => {});
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        // Aceptar diferentes formas de la API: {id_categoria,nombre_cat} o {id,nombre}
+        if (!Array.isArray(data)) return setCategorias([]);
+        const normalizadas = data.map((c) => ({
+          id: c.id ?? c.id_categoria ?? null,
+          nombre: c.nombre ?? c.nombre_cat ?? c.name ?? "(sin nombre)",
+        })).filter((c) => c.id !== null);
+        setCategorias(normalizadas);
+      })
+      .catch(() => setCategorias([]));
   }, []);
 
   const manejarCambioCantidad = (id, valor) => {

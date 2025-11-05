@@ -3,12 +3,12 @@ def test_get_productos_lista(client, mocker):
     """
     ✅ Testea que /api/productos devuelva una lista de productos simulados.
     """
-    fake_prods = [
-        {"id_producto": 1, "nombre_prod": "Leche Descremada 1L", "precio": 350, "stock": 20},
-        {"id_producto": 2, "nombre_prod": "Queso Rallado", "precio": 500, "stock": 10},
-    ]
+    # fake_prods = [
+    #     {"id_producto": 1, "nombre_prod": "Leche Descremada 1L", "precio": 350, "stock": 20},
+    #     {"id_producto": 2, "nombre_prod": "Queso Rallado", "precio": 500, "stock": 10},
+    # ]
 
-    mocker.patch("supermercado.rutas.productos.obtener_productos", return_value=fake_prods)
+    # mocker.patch("supermercado.rutas.productos.obtener_productos", return_value=fake_prods)
 
     res = client.get("/api/productos")
     assert res.status_code == 200
