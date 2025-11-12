@@ -1,31 +1,33 @@
 // src/components/Header.jsx
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useCart } from "./CartContext.jsx";
-import { useAuth } from "./AuthContext.jsx";
-import "../styles/header.css";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
-export default function Header({ busqueda, setBusqueda }) {
-  const { carrito } = useCart();
-  const { usuario, logout } = useAuth();
+export default function Header() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const totalItems = carrito.reduce((acc, it) => acc + (it.cantidad || 0), 0);
-
-  // 🔥 Efecto: agrega/quita la clase .scrolled según el desplazamiento
-  useEffect(() => {
-    const onScroll = () => {
-      const headerEl = document.querySelector(".header");
-      if (!headerEl) return;
-      if (window.scrollY > 50) headerEl.classList.add("scrolled");
-      else headerEl.classList.remove("scrolled");
-    };
-    onScroll(); // set inicial por si recargan en medio de la página
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const handleAdminClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      // No autenticado: navegar a login
+      navigate("/login");
+      return;
+    }
+    if (user.role === "admin") {
+      // Admin: navegar a admin
+      navigate("/admin");
+      return;
+    }
+    if (user.role === "cliente") {
+      // Cliente: mostrar "sin permisos" pero NO redirigir
+      window.alert("Acceso denegado: solo administradores pueden acceder al panel de administración.");
+      return;
+    }
+  };
 
   return (
-    <header className="header">
+    <header>
       <div className="logo">
         <Link to="/">Supermercado</Link>
       </div>
@@ -39,13 +41,20 @@ export default function Header({ busqueda, setBusqueda }) {
       />
 
       <div className="acciones-usuario">
-        <Link to="/carrito" className="carrito-link">
-          🛒 Carrito ({totalItems})
-        </Link>
+        {user?.rol === "admin" ? (
+          // Para admins mostramos un acceso directo al panel en lugar del carrito
+          <Link to="/admin" className="admin-link">
+            👑 Admin
+          </Link>
+        ) : (
+          <Link to="/carrito" className="carrito-link">
+            🛒 Carrito ({totalItems})
+          </Link>
+        )}
 
-        {usuario ? (
+        {user ? (
           <>
-            <span className="usuario">Hola, {usuario.nombre}</span>
+            <span className="usuario">Hola, {user.nombre}</span>
             <button className="btn-logout" onClick={logout}>
               Cerrar sesión
             </button>

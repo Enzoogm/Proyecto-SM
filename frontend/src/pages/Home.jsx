@@ -21,6 +21,11 @@ function Home({ busqueda, setBusqueda }) {
   const { usuario } = useAuth();
 
   useEffect(() => {
+    // Si el usuario es admin, no cargamos la lista pública de productos (el admin usa /admin)
+    if (usuario?.rol === "admin") {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     fetch(`/api/productos`)
       .then((res) => res.json())
@@ -34,7 +39,7 @@ function Home({ busqueda, setBusqueda }) {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [usuario]);
 
   useEffect(() => {
     fetch(`/api/categorias`)

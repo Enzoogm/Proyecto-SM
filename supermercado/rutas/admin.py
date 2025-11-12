@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from supermercado.db import conectar
+from supermercado.rutas.auth import admin_required
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/api/admin")
 
@@ -163,3 +164,13 @@ def obtener_usuarios():
     cursor.close()
     db.close()
     return jsonify(usuarios)
+
+@admin_bp.get("/dashboard")
+@admin_required
+def admin_dashboard():
+    """
+    GET /api/admin/dashboard
+    Protegido: solo accesible para admins.
+    Devuelve 401 si no autenticado, 403 si no es admin.
+    """
+    return jsonify({"msg": "Admin dashboard data", "status": "ok"}), 200

@@ -1,19 +1,10 @@
 # supermercado/app.py
-from flask import Flask, request
-from flask_cors import CORS
-import os
-from dotenv import load_dotenv
+from flask import Flask
+import importlib
+import logging
+from supermercado import rutas
 
-from supermercado.rutas.productos import productos_bp
-from supermercado.rutas.categorias import categorias_bp
-from supermercado.rutas.ventas import ventas_bp
-from supermercado.rutas.pagos import pagos_bp
-from supermercado.rutas.carrito import carrito_bp
-from supermercado.rutas.auth import auth_bp
-from supermercado.rutas.admin import admin_bp
-from supermercado.rutas.promos import promos_bp
-
-load_dotenv()
+logger = logging.getLogger(__name__)
 
 def create_app():
     app = Flask(__name__)
@@ -58,14 +49,18 @@ def create_app():
     app.url_map.strict_slashes = False
 
     # ====== Registrar Blueprints ======
-    app.register_blueprint(admin_bp,       url_prefix="/api/admin")
-    app.register_blueprint(categorias_bp,  url_prefix="/api")
-    app.register_blueprint(productos_bp,   url_prefix="/api")
-    app.register_blueprint(ventas_bp,      url_prefix="/api/ventas")
-    app.register_blueprint(pagos_bp,       url_prefix="/api/pagos")
-    app.register_blueprint(carrito_bp,     url_prefix="/api/carrito")
-    app.register_blueprint(auth_bp,        url_prefix="/api/auth")
-    app.register_blueprint(promos_bp,      url_prefix="/api/promos")
+    # Dynamically import and register blueprints from rutas.__all__
+    for name in getattr(rutas, "__all__", []):
+        try:
+            mod = importlib.import_module(f"supermercado.rutas.{name}")
+            bp = getattr(mod, f"{name}_bp", None) or getattr(mod, "bp", None)
+            if bp:
+                app.register_blueprint(bp)
+                logger.debug("Registered blueprint: %s", name)
+            else:
+                logger.debug("No blueprint found in supermercado.rutas.%s", name)
+        except Exception as e:
+            logger.warning("Failed to import/register supermercado.rutas.%s: %s", name, e)
 
     return app
 
