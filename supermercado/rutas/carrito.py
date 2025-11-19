@@ -25,16 +25,14 @@ def _before_any_request():
 
 # ========================= Rutas ===========================
 
-# GET /api/carrito  y  GET /api/carrito/
-@carrito_bp.route("", methods=["GET"])
 @carrito_bp.route("/", methods=["GET"])
+@carrito_bp.route("", methods=["GET"])
 def ver_carrito():
     """Devuelve el carrito completo (dict {id_producto: cantidad})."""
     return jsonify(session.get("carrito", {})), 200
 
-# POST /api/carrito  y  POST /api/carrito/
-@carrito_bp.route("", methods=["POST"])
 @carrito_bp.route("/", methods=["POST"])
+@carrito_bp.route("", methods=["POST"])
 def agregar_al_carrito():
     """
     Agrega al carrito.

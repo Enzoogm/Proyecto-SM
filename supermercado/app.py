@@ -1,5 +1,8 @@
+
 # supermercado/app.py
-from flask import Flask
+import os
+from flask import Flask, request
+from flask_cors import CORS
 import importlib
 import logging
 from supermercado import rutas

@@ -1,11 +1,15 @@
 // src/components/Header.jsx
 import React from "react";
+import "../styles/header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-export default function Header() {
+export default function Header({ busqueda, setBusqueda }) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  // Placeholder para totalItems y logout, reemplaza por lógica real si tienes contexto de carrito y logout
+  const totalItems = 0;
+  const logout = () => { window.alert("Cerrar sesión (implementa la lógica real)"); };
 
   const handleAdminClick = (e) => {
     e.preventDefault();
@@ -27,7 +31,7 @@ export default function Header() {
   };
 
   return (
-    <header>
+    <header className="header">
       <div className="logo">
         <Link to="/">Supermercado</Link>
       </div>

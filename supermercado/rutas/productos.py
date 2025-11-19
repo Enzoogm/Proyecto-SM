@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify
 from supermercado.db import conectar
 
-productos_bp = Blueprint("productos", __name__)
+productos_bp = Blueprint("productos", __name__, url_prefix="/api")
 
 def obtener_productos():
     """
